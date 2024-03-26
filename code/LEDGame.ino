@@ -1,5 +1,6 @@
 #include "libraries/Button/Button.h"
 
+#define LED_COUNT = 3
 #define RED_LED = 13
 #define YELLOW_LED = 10
 #define GREEN_LED = 7
@@ -8,16 +9,20 @@
 
 #define MAX_LEVEL = 100001
 
-enum colors { RED = 13, YELLOW = 10, GREEN = 7 } color{};
+enum colors { RED = RED_LED, YELLOW = YELLOW_LED, GREEN = GREEN_LED };
 const byte leds = { RED_LED, YELLOW_LED, GREEN_LED };
+
+Button btns{ LED_COUNT };
 
 void setup()
 {
 	Serial.begin(9600);
 
-	pinMode(RED_LED, OUTPUT);
-	pinMode(YELLOW_LED, OUTPUT);
-	pinMode(GREEN_LED, OUTPUT);
+	for (int i = 0; i < LED_COUNT; i++)
+	{
+		pinMode(leds[i], OUTPUT);
+		btns[i] = Button(leds[i]);
+	}
 }
 
 void loop()
@@ -29,6 +34,7 @@ void mode1() //На каждом уровне к последователности добавляется новый цвет
 {
 	static colors levels[MAX_LEVEL]{};
 	static int state = 0;
+	static colors color;
 
 	levels[state] = random(GREEN); //Первый цвет
 
@@ -62,7 +68,7 @@ byte get_answer() //Функция для считывания нажатий пользователя на кнопки
 {
 	for (byte led : leds)
 	{
-		if (digitalRead(led)) { return led; }
+		if (btns[led].isPressed()) { return led; }
 	}
 
 	return -1;
