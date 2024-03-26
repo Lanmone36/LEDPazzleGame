@@ -12,7 +12,7 @@
 enum colors { RED = RED_LED, YELLOW = YELLOW_LED, GREEN = GREEN_LED };
 const byte leds = { RED_LED, YELLOW_LED, GREEN_LED };
 
-Button btns{ LED_COUNT };
+Button btns[LED_COUNT];
 
 void setup()
 {
