@@ -7,7 +7,7 @@
 class Button
 {
 public:
-	Button(const byte &pin, const byte &prd);
+	Button(const byte &pin);
 
 	bool isPressed();
 
