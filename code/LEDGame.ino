@@ -1,18 +1,25 @@
 #include "libraries/Button/Button.h"
 
-#define LED_COUNT 3
+#define LED_COUNT 3 //Количество светодиодов
+
+//Пины светодиодов
 #define RED_LED 13
 #define YELLOW_LED 10
 #define GREEN_LED 7
 
-#define BLINK_TIME 500
+//Пины кнопок
+#define RED_BUTTON 12
+#define YELLOW_BUTTON 9
+#define GREEN_BUTTON 6
 
-#define MAX_LEVEL 100001
+#define BLINK_TIME 500 //Период мигания светодиодов
 
-enum colors { RED = RED_LED, YELLOW = YELLOW_LED, GREEN = GREEN_LED };
+#define MAX_LEVEL 100001 //Максимальное количество уровней
+
+//enum colors { RED = RED_LED, YELLOW = YELLOW_LED, GREEN = GREEN_LED };
 const byte leds = { RED_LED, YELLOW_LED, GREEN_LED };
 
-Button btns[LED_COUNT];
+Button btns[LED_COUNT] = {RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON};
 
 void setup()
 {
@@ -21,7 +28,6 @@ void setup()
 	for (int i = 0; i < LED_COUNT; i++)
 	{
 		pinMode(leds[i], OUTPUT);
-		btns[i] = Button(leds[i]);
 	}
 }
 
@@ -32,11 +38,11 @@ void loop()
 
 void mode1() //На каждом уровне к последователности добавляется новый цвет
 {
-	static colors levels[MAX_LEVEL]{};
+	static byte levels[MAX_LEVEL]{};
 	static int state = 0;
-	static colors color;
+	static byte color;
 
-	levels[state] = random(GREEN); //Первый цвет
+	levels[state] = random(LED_COUNT); //Первый цвет
 
 	for (int i = 0; i <= state; i++) { led_blink(leds[levels[i]]); }
 
