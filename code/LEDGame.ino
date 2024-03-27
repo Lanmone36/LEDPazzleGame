@@ -1,25 +1,24 @@
-#include "libraries/Button/Button.h"
+п»ї#include "libraries/Button/Button.h"
 
-#define LED_COUNT 3 //Количество светодиодов
+#define LED_COUNT 3 //РљРѕР»РёС‡РµСЃС‚РІРѕ СЃРІРµС‚РѕРґРёРѕРґРѕРІ
 
-//Пины светодиодов
+//РџРёРЅС‹ СЃРІРµС‚РѕРґРёРѕРґРѕРІ
 #define RED_LED 13
 #define YELLOW_LED 10
 #define GREEN_LED 7
 
-//Пины кнопок
+//РџРёРЅС‹ РєРЅРѕРїРѕРє
 #define RED_BUTTON 12
 #define YELLOW_BUTTON 9
 #define GREEN_BUTTON 6
 
-#define BLINK_TIME 500 //Период мигания светодиодов
+#define BLINK_TIME 500 //РџРµСЂРёРѕРґ РјРёРіР°РЅРёСЏ СЃРІРµС‚РѕРґРёРѕРґРѕРІ
 
-#define MAX_LEVEL 100001 //Максимальное количество уровней
+#define MAX_LEVEL 100001 //РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓСЂРѕРІРЅРµР№
 
-//enum colors { RED = RED_LED, YELLOW = YELLOW_LED, GREEN = GREEN_LED };
+
 const byte leds = { RED_LED, YELLOW_LED, GREEN_LED };
-
-Button btns[LED_COUNT] = {RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON};
+const Button btns[LED_COUNT] = {RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON};
 
 void setup()
 {
@@ -36,13 +35,13 @@ void loop()
 	mode1();
 }
 
-void mode1() //На каждом уровне к последователности добавляется новый цвет
+void mode1() //РќР° РєР°Р¶РґРѕРј СѓСЂРѕРІРЅРµ Рє РїРѕСЃР»РµРґРѕРІР°С‚РµР»РЅРѕСЃС‚Рё РґРѕР±Р°РІР»СЏРµС‚СЃСЏ РЅРѕРІС‹Р№ С†РІРµС‚
 {
 	static byte levels[MAX_LEVEL]{};
 	static int state = 0;
 	static byte color;
 
-	levels[state] = random(LED_COUNT); //Первый цвет
+	levels[state] = random(LED_COUNT); //РџРµСЂРІС‹Р№ С†РІРµС‚
 
 	for (int i = 0; i <= state; i++) { led_blink(leds[levels[i]]); }
 
@@ -57,7 +56,7 @@ void mode1() //На каждом уровне к последователности добавляется новый цвет
 	}
 
 	if (this_level == MAX_LEVEL) { win(); }
-	else if (this_level > state) { Serial.println("Perfect!"); } //Уровень выигран
+	else if (this_level > state) { Serial.println("Perfect!"); } //РЈСЂРѕРІРµРЅСЊ РІС‹РёРіСЂР°РЅ
 	else { lose(); }
 }
 
@@ -70,7 +69,7 @@ void led_blink(const byte& pin)
 	digitalWrite(pin, LOW);
 }
 
-byte get_answer() //Функция для считывания нажатий пользователя на кнопки
+byte get_answer() //Р¤СѓРЅРєС†РёСЏ РґР»СЏ СЃС‡РёС‚С‹РІР°РЅРёСЏ РЅР°Р¶Р°С‚РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РєРЅРѕРїРєРё
 {
 	for (byte led : leds)
 	{
