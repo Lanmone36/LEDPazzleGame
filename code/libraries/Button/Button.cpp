@@ -1,6 +1,6 @@
 #include "Button.h"
 
-Button::Button(const byte& pin, const byte& prd): _pin(pin)//, _prd(prd)
+Button::Button(const byte& pin): _pin(pin)//, _prd(prd)
 {
 	pinMode(this->_pin, INPUT_PULLUP);
 }

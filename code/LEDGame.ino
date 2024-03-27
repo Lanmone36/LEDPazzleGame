@@ -1,13 +1,13 @@
 #include "libraries/Button/Button.h"
 
-#define LED_COUNT = 3
-#define RED_LED = 13
-#define YELLOW_LED = 10
-#define GREEN_LED = 7
+#define LED_COUNT 3
+#define RED_LED 13
+#define YELLOW_LED 10
+#define GREEN_LED 7
 
-#define BLINK_TIME = 500
+#define BLINK_TIME 500
 
-#define MAX_LEVEL = 100001
+#define MAX_LEVEL 100001
 
 enum colors { RED = RED_LED, YELLOW = YELLOW_LED, GREEN = GREEN_LED };
 const byte leds = { RED_LED, YELLOW_LED, GREEN_LED };
