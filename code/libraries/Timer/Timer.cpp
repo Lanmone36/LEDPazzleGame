@@ -1,6 +1,6 @@
-#include <Timer.h>
+#include "Timer.h"
 
-Timer::Timer(uint16_t prd)
+Timer::Timer(const uint16_t &prd)
 {
 	this->_prd = prd;
 	this->_timer = 0;
