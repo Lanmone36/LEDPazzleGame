@@ -1,4 +1,5 @@
 ﻿#include "libraries/Button/Button.h"
+#include "libraries/Timer/Timer.h"
 
 #define LED_COUNT 3 //Количество светодиодов
 
@@ -19,6 +20,8 @@
 const byte leds[LED_COUNT] = { RED_LED, YELLOW_LED, GREEN_LED };
 
 Button btns[LED_COUNT] = { RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };
+
+Timer blink_timer(BLINK_TIME); //Таймер для мигания светодиодом
 
 byte num_key = 0;
 int sum_key = 0, start = 1;
@@ -82,12 +85,12 @@ void loop()
 
 void led_blink(const byte& pin)
 {
-    uint32_t timer = millis();
-
-    while ((millis() - timer) < BLINK_TIME) {};
+    blink_timer.start();
+    while (!blink_timer.ready()) {};
     digitalWrite(pin, HIGH);
-    timer = millis();
-    while ((millis() - timer) < BLINK_TIME) {};
+
+    blink_timer.start();
+    while (!blink_timer.ready()) {};
     digitalWrite(pin, LOW);
 }
 
