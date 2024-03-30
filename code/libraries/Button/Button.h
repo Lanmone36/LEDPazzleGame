@@ -2,7 +2,7 @@
 
 #include <Arduino.h>
 
-#define _DEB_BTN_TIME 100
+#define _DEB_BTN_TIME 50
 
 class Button
 {

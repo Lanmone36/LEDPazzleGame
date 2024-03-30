@@ -9,18 +9,8 @@ bool Button::isPressed()
 {
 	bool state = digitalRead(this->_pin);
 
-	if (!state && !this->_flag && (millis() - this->_timer) >= _DEB_BTN_TIME)
-	{
-		this->_timer = millis();
-		this->_flag = true;
+	if (!state){ this->_timer = millis(); }
+	if (state && (millis() - this->_timer) >= _DEB_BTN_TIME){ return false; }
 
-		return true;
-	}
-	if (state && this->_flag && (millis() - this->_timer) >= _DEB_BTN_TIME)
-	{
-		this->_timer = millis();
-		this->_flag = false;
-	}
-
-	return false;
+	return true;
 }

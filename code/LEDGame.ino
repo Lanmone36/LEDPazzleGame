@@ -14,77 +14,99 @@
 
 #define BLINK_TIME 500 //Период мигания светодиодов
 
-#define MAX_LEVEL 100001 //Максимальное количество уровней
+#define MAX_LEVEL 10001//Максимальное количество уровней
 
+const byte leds[LED_COUNT] = { RED_LED, YELLOW_LED, GREEN_LED };
 
-const byte leds = { RED_LED, YELLOW_LED, GREEN_LED };
-const Button btns[LED_COUNT] = {RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON};
+Button btns[LED_COUNT] = { RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };
+
+byte num_key = 0;
+int sum_key = 0, start = 1;
+int level = 0;
+int levels[101]{};
 
 void setup()
 {
-	Serial.begin(9600);
+    Serial.begin(9600);
 
-	for (int i = 0; i < LED_COUNT; i++)
-	{
-		pinMode(leds[i], OUTPUT);
-	}
+    for (int i = 0; i < LED_COUNT; i++)
+    {
+        pinMode(leds[i], OUTPUT);
+    }
+
+    randomSeed(analogRead(A0));
 }
 
 void loop()
 {
-	mode1();
+    num_key = get_answer();
+
+    if (num_key != 255)
+    {
+        sum_key++;
+
+        uint32_t t = millis();
+        digitalWrite(leds[num_key], HIGH);
+        while (btns[num_key].isPressed()) {};
+        digitalWrite(leds[num_key], LOW);
+
+        if (levels[sum_key - 1] != num_key) { level = 0; start = 1; }
+        if (!start && level < sum_key) { level++; start = 1; }
+    }
+
+    if (start)
+    {
+        start = 0; sum_key = 0; levels[level] = random(3);
+
+        if (level == 0)
+        {
+            uint32_t t = millis();
+            for (int i = 0; i < LED_COUNT; i++) { digitalWrite(leds[i], HIGH); }
+            while (millis() - t < 1000) {};
+            for (int i = 0; i < LED_COUNT; i++) { digitalWrite(leds[i], LOW); }
+            t = millis();
+            while (millis() - t < 500) {};
+        }
+
+        for (int i = 0; i <= level; i++) { led_blink(leds[levels[i]]); }
+    }
 }
 
-void mode1() //На каждом уровне к последователности добавляется новый цвет
-{
-	static byte levels[MAX_LEVEL]{};
-	static int state = 0;
-	static byte color;
-
-	levels[state] = random(LED_COUNT); //Первый цвет
-
-	for (int i = 0; i <= state; i++) { led_blink(leds[levels[i]]); }
-
-	int this_level = 0;
-
-	while (this_level <= state)
-	{
-		color = get_answer();
-
-		if (color == levels[this_level]) { this_level++; }
-		else if (color != -1) { break; }
-	}
-
-	if (this_level == MAX_LEVEL) { win(); }
-	else if (this_level > state) { Serial.println("Perfect!"); } //Уровень выигран
-	else { lose(); }
-}
+//void mode1() //На каждом уровне к последователности добавляется новый цвет
+//{
+//  byte *levels = new byte[MAX_LEVEL];
+//  byte user_ans, state = 0;
+//
+//  
+//}
 
 void led_blink(const byte& pin)
 {
-	uint32_t timer = millis();
+    uint32_t timer = millis();
 
-	digitalWrite(pin, HIGH);
-	while ((millis() - timer) < BLINK_TIME) {};
-	digitalWrite(pin, LOW);
+    while ((millis() - timer) < BLINK_TIME) {};
+    digitalWrite(pin, HIGH);
+    timer = millis();
+    while ((millis() - timer) < BLINK_TIME) {};
+    digitalWrite(pin, LOW);
 }
 
 byte get_answer() //Функция для считывания нажатий пользователя на кнопки
 {
-	for (byte led : leds)
-	{
-		if (btns[led].isPressed()) { return led; }
-	}
+    for (int color = 0; color < LED_COUNT; color++)
+    {
+        if (btns[color].isPressed()) { return color; }
+    }
 
-	return -1;
+    return 255;
 }
 
 void lose()
 {
-	Serial.begin("Sorry, but yoe lost!");
+    Serial.println("Sorry, but yoe lost!");
 }
 
 void win()
 {
-	Serial.begin("Congratulations, you've won!");
+    Serial.println("Congratulations, you've won!");
 }
