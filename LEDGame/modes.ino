@@ -1,9 +1,13 @@
-void mode1() //На каждом уровне к последователности добавляется новый цвет
-{
-    byte levels[MAX_LEVEL];
+#define MAX_LEVEL 10001//РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СѓСЂРѕРІРЅРµР№
+
+void mode1() //пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+{   
+    byte *levels = new byte[MAX_LEVEL];
     byte user_ans;
     int this_level = 0, state = 0;
     bool next_level = true;
+
+    randomSeed(A3);
 
     while (state < MAX_LEVEL)
     {

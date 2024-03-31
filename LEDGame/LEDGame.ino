@@ -13,15 +13,9 @@
 #define YELLOW_BUTTON 9
 #define GREEN_BUTTON 6
 
-#define BLINK_TIME 500 //Период мигания светодиодов
-
-#define MAX_LEVEL 10001//Максимальное количество уровней
-
 const byte leds[LED_COUNT] = { RED_LED, YELLOW_LED, GREEN_LED };
 
 Button btns[LED_COUNT] = { RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };
-
-Timer blink_timer(BLINK_TIME); //Таймер для мигания светодиодом
 
 void setup()
 {
@@ -31,12 +25,9 @@ void setup()
     {
         pinMode(leds[i], OUTPUT);
     }
-
-    randomSeed(analogRead(A3));
 }
 
 void loop()
 {
-    randomSeed(analogRead(A3));
     mode1();
 }
