@@ -8,6 +8,7 @@ void mode1() //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï
     bool next_level = true;
 
     randomSeed(A3);
+    start_game();
 
     while (state < MAX_LEVEL)
     {
@@ -42,5 +43,5 @@ void mode1() //ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï
     if (state == MAX_LEVEL) { win(); }
     else { lose(); }
 
-    // delete[] levels;
+    delete[] levels;
 }
