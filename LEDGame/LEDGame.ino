@@ -1,5 +1,7 @@
-﻿#include "libraries/Button/Button.h"
-#include "libraries/Timer/Timer.h"
+#include "./libraries/Timer/Timer.h"
+#include "./libraries/Timer/Timer.cpp"
+#include "./libraries/Button/Button.h"
+#include "./libraries/Button/Button.cpp"
 
 #define LED_COUNT 3 //Количество светодиодов
 
@@ -73,43 +75,4 @@ void loop()
 
         for (int i = 0; i <= level; i++) { led_blink(leds[levels[i]]); }
     }
-}
-
-//void mode1() //На каждом уровне к последователности добавляется новый цвет
-//{
-//  byte *levels = new byte[MAX_LEVEL];
-//  byte user_ans, state = 0;
-//
-//  
-//}
-
-void led_blink(const byte& pin)
-{
-    blink_timer.start();
-    while (!blink_timer.ready()) {};
-    digitalWrite(pin, HIGH);
-
-    blink_timer.start();
-    while (!blink_timer.ready()) {};
-    digitalWrite(pin, LOW);
-}
-
-byte get_answer() //Функция для считывания нажатий пользователя на кнопки
-{
-    for (int color = 0; color < LED_COUNT; color++)
-    {
-        if (btns[color].isPressed()) { return color; }
-    }
-
-    return 255;
-}
-
-void lose()
-{
-    Serial.println("Sorry, but yoe lost!");
-}
-
-void win()
-{
-    Serial.println("Congratulations, you've won!");
 }
