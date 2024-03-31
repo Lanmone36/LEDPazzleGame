@@ -2,4 +2,4 @@
 LEDGame.vcxproj
 LEDGame.vcxproj.filters
 src/
-code/debug/
+LEDGame/debug/
