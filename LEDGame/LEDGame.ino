@@ -1,5 +1,5 @@
-#include "libraries/Timer/Timer.h"
-#include "libraries/Button/Button.h"
+#include "./libraries/Timer/Timer.h"
+#include "./libraries/Button/Button.h"
 
 #define LED_COUNT 3 //Количество светодиодов
 
@@ -23,11 +23,6 @@ Button btns[LED_COUNT] = { RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };
 
 Timer blink_timer(BLINK_TIME); //Таймер для мигания светодиодом
 
-byte num_key = 0;
-int sum_key = 0, start = 1;
-int level = 0;
-int levels[101]{};
-
 void setup()
 {
     Serial.begin(9600);
@@ -37,40 +32,11 @@ void setup()
         pinMode(leds[i], OUTPUT);
     }
 
-    randomSeed(analogRead(A0));
+    randomSeed(analogRead(A3));
 }
 
 void loop()
 {
-    num_key = get_answer();
-
-    if (num_key != 255)
-    {
-        sum_key++;
-
-        uint32_t t = millis();
-        digitalWrite(leds[num_key], HIGH);
-        while (btns[num_key].isPressed()) {};
-        digitalWrite(leds[num_key], LOW);
-
-        if (levels[sum_key - 1] != num_key) { level = 0; start = 1; }
-        if (!start && level < sum_key) { level++; start = 1; }
-    }
-
-    if (start)
-    {
-        start = 0; sum_key = 0; levels[level] = random(3);
-
-        if (level == 0)
-        {
-            uint32_t t = millis();
-            for (int i = 0; i < LED_COUNT; i++) { digitalWrite(leds[i], HIGH); }
-            while (millis() - t < 1000) {};
-            for (int i = 0; i < LED_COUNT; i++) { digitalWrite(leds[i], LOW); }
-            t = millis();
-            while (millis() - t < 500) {};
-        }
-
-        for (int i = 0; i <= level; i++) { led_blink(leds[levels[i]]); }
-    }
+    randomSeed(analogRead(A3));
+    mode1();
 }
