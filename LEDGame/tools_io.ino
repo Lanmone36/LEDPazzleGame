@@ -1,6 +1,6 @@
-#define BLINK_TIME 500 //Период мигания светодиодов
+п»ї#define BLINK_TIME 500 //РџРµСЂРёРѕРґ РјРёРіР°РЅРёСЏ СЃРІРµС‚РѕРґРёРѕРґРѕРІ
 
-Timer blink_timer(BLINK_TIME); //Таймер для мигания светодиодом
+Timer blink_timer(BLINK_TIME); //РўР°Р№РјРµСЂ РґР»СЏ РјРёРіР°РЅРёСЏ СЃРІРµС‚РѕРґРёРѕРґРѕРј
 
 void led_blink(const byte& pin)
 {
@@ -13,7 +13,7 @@ void led_blink(const byte& pin)
     digitalWrite(pin, LOW);
 }
 
-byte get_answer() //Функция для считывания нажатий пользователя на кнопки
+byte get_answer() //Р¤СѓРЅРєС†РёСЏ РґР»СЏ СЃС‡РёС‚С‹РІР°РЅРёСЏ РЅР°Р¶Р°С‚РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РєРЅРѕРїРєРё
 {
     for (int color = 0; color < LED_COUNT; color++)
     {
