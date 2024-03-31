@@ -2,7 +2,7 @@
 
 void mode1() //На новом уровне к последовательности добавляется новый цвет
 {   
-    byte *levels = new byte[MAX_LEVEL];
+    byte levels[MAX_LEVEL];
     byte user_ans;
     int this_level = 0, state = 0;
     bool next_level = true;
@@ -43,5 +43,5 @@ void mode1() //На новом уровне к последовательнос�
     if (state == MAX_LEVEL) { win(); }
     else { lose(); }
 
-    delete[] levels;
+    //delete[] levels;
 }
