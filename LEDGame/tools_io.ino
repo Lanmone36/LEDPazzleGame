@@ -1,4 +1,4 @@
-void led_blink(const byte& pin)
+п»їvoid led_blink(const byte& pin)
 {
     blink_timer.start();
     while (!blink_timer.ready()) {};
@@ -9,7 +9,7 @@ void led_blink(const byte& pin)
     digitalWrite(pin, LOW);
 }
 
-byte get_answer() //Функция для считывания нажатий пользователя на кнопки
+byte get_answer() //Р¤СѓРЅРєС†РёСЏ РґР»СЏ СЃС‡РёС‚С‹РІР°РЅРёСЏ РЅР°Р¶Р°С‚РёР№ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ РЅР° РєРЅРѕРїРєРё
 {
     for (int color = 0; color < LED_COUNT; color++)
     {

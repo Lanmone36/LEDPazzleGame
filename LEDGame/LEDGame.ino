@@ -1,7 +1,5 @@
-#include "./libraries/Timer/Timer.h"
-#include "./libraries/Timer/Timer.cpp"
-#include "./libraries/Button/Button.h"
-#include "./libraries/Button/Button.cpp"
+#include "libraries/Timer/Timer.h"
+#include "libraries/Button/Button.h"
 
 #define LED_COUNT 3 //Количество светодиодов
 
