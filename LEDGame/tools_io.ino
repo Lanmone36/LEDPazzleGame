@@ -63,6 +63,7 @@ void start_game()
     lcd.home();
     lcd.print(start_text[1]);
 
+    //Мигание светодиодами
     for (int led : leds) { digitalWrite(led, HIGH); }
     blink_timer.start();
     while (!blink_timer.ready()) {};
