@@ -1,3 +1,5 @@
+#include <LiquidCrystal_I2C.h>
+
 #include "./libraries/Timer/Timer.h"
 #include "./libraries/Button/Button.h"
 
@@ -17,9 +19,12 @@ const byte leds[LED_COUNT] = { RED_LED, YELLOW_LED, GREEN_LED };
 
 Button btns[LED_COUNT] = { RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };
 
+LiquidCrystal_I2C lcd(0x27, 16, 2); //LCD дисплей
+
 void setup()
 {
-    Serial.begin(9600);
+    lcd.init();
+    lcd.backlight();
 
     for (int i = 0; i < LED_COUNT; i++)
     {
