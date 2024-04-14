@@ -1,9 +1,14 @@
+#include <LiquidCrystal_I2C.h>
+
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
 
 //################### Таймеры ###################
 Timer blink_timer(BLINK_TIME); //Таймер для мигания светодиодом
 Timer lcd_update_timer(TEXT_UPDATE_PRD);
+//###################
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); //LCD дисплей
 
 //################### Текст ###################
 
@@ -30,6 +35,8 @@ const char* game_text[] = { "Great!",
 
 const char* win_text[] = { "Congratulations,",
                            "you've won!" };
+
+//###################
 
 void led_blink(const byte& pin)
 {
@@ -60,7 +67,7 @@ void start_game()
     lcd_update_timer.start();
     while (!lcd_update_timer.ready()) {};
 
-    lcd.home();
+    lcd.setCursos(0, 0);
     lcd.print(start_text[1]);
 
     //Мигание светодиодами
@@ -80,4 +87,10 @@ void lose()
 void win()
 {
     
+}
+
+void IOToolsInit()
+{
+    lcd.init();
+    lcd.backlight();
 }
