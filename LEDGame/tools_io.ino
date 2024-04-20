@@ -1,5 +1,3 @@
-#include <LiquidCrystal_I2C.h>
-
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
 
@@ -7,8 +5,6 @@
 Timer blink_timer(BLINK_TIME); //Таймер для мигания светодиодом
 Timer lcd_update_timer(TEXT_UPDATE_PRD);
 //###################
-
-LiquidCrystal_I2C lcd(0x27, 16, 2); //LCD дисплей
 
 //################### Текст ###################
 
@@ -67,8 +63,11 @@ void start_game()
     lcd_update_timer.start();
     while (!lcd_update_timer.ready()) {};
 
-    lcd.setCursos(0, 0);
+    lcd.setCursor(0, 0);
     lcd.print(start_text[1]);
+
+    lcd_update_timer.start();
+    while (!lcd_update_timer.ready()) {};
 
     //Мигание светодиодами
     for (int led : leds) { digitalWrite(led, HIGH); }
@@ -81,16 +80,26 @@ void start_game()
 
 void lose()
 {
-    
+    //lcd.clear();
+    //lcd.print("A");
 }
 
 void win()
 {
-    
+    //lcd.clear();
+    //lcd.print("C");
 }
 
 void IOToolsInit()
 {
+    //Инициализация дисплея
     lcd.init();
     lcd.backlight();
+    lcd.setCursor(0, 0);
+
+    //Инициализация светодиодов
+    for (int i = 0; i < LED_COUNT; i++)
+    {
+        pinMode(leds[i], OUTPUT);
+    }
 }
