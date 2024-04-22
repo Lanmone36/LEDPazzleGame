@@ -1,3 +1,5 @@
+#define len(str) sizeof(str)/(sizeof(char*)*LCD_COLS)
+
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
 
@@ -9,7 +11,7 @@ Timer lcd_update_timer(TEXT_UPDATE_PRD);
 //################### Текст ###################
 
 //Текст для меню
-const char* menu_text[] = { "     mode 1     ",
+const char* menu_text[4] = { "     mode 1     ",
                             "     mode 2     ",
                             "     mode 3     ",
                             "     Sound:     " };
@@ -17,7 +19,7 @@ const char* menu_text[] = { "     mode 1     ",
 const char* best_score = "Best score:";
 
 //Текст дя игры
-const char* start_text[] = { "     READY      ",
+const char* start_text[2] = { "     READY      ",
                              "       GO!      " }; //Старт игры
 
 const char* lose_text[2][2] = { { "     Sorry,     ",
@@ -25,11 +27,11 @@ const char* lose_text[2][2] = { { "     Sorry,     ",
                                { " You score:",
                                  "                "} };
 
-const char* game_text[] = { "Great!",
+const char* game_text[3] = { "Great!",
                             "Excellent!",
                             "Score:" }; //Тект, появляющийся после кадого уровня
 
-const char* win_text[] = { "Congratulations,",
+const char* win_text[2] = { "Congratulations,",
                            "you've won!" };
 
 //###################
@@ -58,16 +60,15 @@ byte get_answer() //Функция для считывания нажатий п
 void start_game()
 {
     //Обновление экрана
-    lcd.print(start_text[0]);
+    for (int text_i = 0; text_i < len(start_text); text_i++)
+    {
+        lcd.print(text);
 
-    lcd_update_timer.start();
-    while (!lcd_update_timer.ready()) {};
+        lcd_update_timer.start();
+        while (!lcd_update_timer.ready()) {};
 
-    lcd.setCursor(0, 0);
-    lcd.print(start_text[1]);
-
-    lcd_update_timer.start();
-    while (!lcd_update_timer.ready()) {};
+        lcd.setCursor(0, 0);
+    }
 
     //Мигание светодиодами
     for (int led : leds) { digitalWrite(led, HIGH); }
@@ -80,8 +81,8 @@ void start_game()
 
 void lose()
 {
-    //lcd.clear();
-    //lcd.print("A");
+    lcd.clear();
+    lcd.print("A");
 }
 
 void win()
