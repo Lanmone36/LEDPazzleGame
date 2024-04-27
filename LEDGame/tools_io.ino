@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 #define len(str) sizeof(str)/(sizeof(*str))
+=======
+#define len(str) sizeof(str)/(sizeof(str*))
+>>>>>>> 6fcface8c14e852cebc263203c3c932b4fed92c5
 
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
