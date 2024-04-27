@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 #define len(str) sizeof(str)/(sizeof(*str))
-=======
-#define len(str) sizeof(str)/(sizeof(str*))
->>>>>>> 6fcface8c14e852cebc263203c3c932b4fed92c5
 
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
@@ -50,7 +46,7 @@ const char* win_text[2] = { "Congratulations,",
 
 //###################
 
-void lcd_print(const char** mess, const bool& delay = false)
+void lcd_print(const char** mess, const bool& delay = false) //Функция для вывода текста на дисплей
 {
     for (int text_row = 0; text_row < LCD_ROWS; text_row++)
     {

@@ -15,7 +15,7 @@
 #define YELLOW_BUTTON 9
 #define GREEN_BUTTON 6
 
-//Паоаметры дисплея
+//Параметры дисплея
 #define LCD_COLS 16
 #define LCD_ROWS 2
 #define LCD_ADDR 0x27
