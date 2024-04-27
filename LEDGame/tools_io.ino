@@ -1,4 +1,4 @@
-#define len(str) sizeof(str)/(sizeof(char*)*LCD_COLS)
+#define len(str) sizeof(str)/(sizeof(str*))
 
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
