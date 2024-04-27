@@ -1,6 +1,6 @@
 #define MAX_LEVEL 10001//Максимальное количество уровней
 
-void mode1()//На каждом уровне к последователности добавляется новый цвет
+void mode1()//�� ������ ������ � ����������������� ����������� ����� ����
 {
     byte levels[MAX_LEVEL];
     byte user_ans;
@@ -26,21 +26,21 @@ void mode1()//На каждом уровне к последователност
         {
             user_ans = get_answer();
 
-            if (user_ans != 255) //Пользователь нажал на одну из кнопок
+            if (user_ans != 255) //������������ ����� �� ���� �� ������
             {
                 digitalWrite(leds[user_ans], HIGH);
                 while (btns[user_ans].isPressed()) {};
                 digitalWrite(leds[user_ans], LOW);
 
                 if (levels[this_level] != user_ans) { break; }
-                if (this_level == state) { next_level = true; state++; }
+                if (this_level == state) { next_level = true; state++;}
 
                 this_level++;
             }
         }
     }
 
-    if (state == MAX_LEVEL) { win(); }
+    if (state == MAX_LEVEL) { Serial.println(1); }
     else { lose(); }
 
     //delete[] levels;

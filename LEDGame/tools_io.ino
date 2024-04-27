@@ -1,4 +1,4 @@
-#define len(str) sizeof(str)/(sizeof(char*)*LCD_COLS)
+#define len(str) sizeof(str)/(sizeof(*str))
 
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
@@ -11,30 +11,55 @@ Timer lcd_update_timer(TEXT_UPDATE_PRD);
 //################### Текст ###################
 
 //Текст для меню
-const char* menu_text[4] = { "     mode 1     ",
-                            "     mode 2     ",
-                            "     mode 3     ",
-                            "     Sound:     " };
+const char* menu_text[4][2] = { { "     mode 1     ",
+                                  "" },
+                                { "     mode 2     ",
+                                  "" },
+                                { "     mode 3     ",
+                                  "" },
+                                { "     Sound:     ",
+                                  "" } };
 
-const char* best_score = "Best score:";
+const char* scores[2][2] = { { "Score:",
+                               "" },
+                             { "Best score:",
+                               "" } };
 
 //Текст дя игры
-const char* start_text[2] = { "     READY      ",
-                             "       GO!      " }; //Старт игры
+const char* start_text[2][2] = { { "      READY     ",
+                                   "" },
+                                 { "       GO!      ",
+                                   "" } }; //Старт игры
 
 const char* lose_text[2][2] = { { "     Sorry,     ",
-                                 " but you lost!  "},
-                               { " You score:",
-                                 "                "} };
+                                  " but you lost!  " },
+                                { " You score:",
+                                  "" } };
 
-const char* game_text[3] = { "Great!",
-                            "Excellent!",
-                            "Score:" }; //Тект, появляющийся после кадого уровня
+const char* game_text[2][2] = { { "     Great!     ",
+                                  "" },
+                                { "   Excellent!   ",
+                                  "" } }; //Тект, появляющийся после кадого уровня
 
 const char* win_text[2] = { "Congratulations,",
-                           "you've won!" };
+                            "   you've won!  " };
 
 //###################
+
+void lcd_print(const char** mess, const bool& delay = false)
+{
+    for (int text_row = 0; text_row < LCD_ROWS; text_row++)
+    {
+        lcd.setCursor(text_row, 0);
+        lcd.print(mess[text_row]);
+    }
+
+    if (delay)
+    {
+        lcd_update_timer.start();
+        while (!lcd_update_timer.ready()) {};
+    }
+}
 
 void led_blink(const byte& pin)
 {
@@ -62,12 +87,7 @@ void start_game()
     //Обновление экрана
     for (int text_i = 0; text_i < len(start_text); text_i++)
     {
-        lcd.print(text);
-
-        lcd_update_timer.start();
-        while (!lcd_update_timer.ready()) {};
-
-        lcd.setCursor(0, 0);
+        lcd_print(start_text[text_i], true);
     }
 
     //Мигание светодиодами
@@ -81,14 +101,17 @@ void start_game()
 
 void lose()
 {
-    lcd.clear();
-    lcd.print("A");
+    
 }
 
-void win()
+void win(const bool &last_level = true, const int &level = 1)
 {
-    //lcd.clear();
-    //lcd.print("C");
+    /*if (last_level)
+    {
+        for
+    }*/
+
+
 }
 
 void IOToolsInit()
@@ -97,6 +120,9 @@ void IOToolsInit()
     lcd.init();
     lcd.backlight();
     lcd.setCursor(0, 0);
+    lcd.clear();
+
+    lcd.print(" A ");
 
     //Инициализация светодиодов
     for (int i = 0; i < LED_COUNT; i++)
