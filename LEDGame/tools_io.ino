@@ -1,4 +1,4 @@
-#define len(str) sizeof(str)/(sizeof(*str))
+#define len(str) sizeof(str)/(sizeof(*str)) //Функция для определения количества экранных сообщений
 
 #define BLINK_TIME 500 //Период мигания светодиодов
 #define TEXT_UPDATE_PRD 550 //Период обновления текса на LCD дисплее
@@ -61,8 +61,18 @@ void lcd_print(const char** mess, const bool& delay = false) //Функция д
     }
 }
 
-void led_blink(const byte& pin)
+void led_blink(const byte& pin = NONE_LED)
 {
+    if (pin == NONE_LED)
+    {
+        //Мигание всеми светодиодами
+        for (int led : leds) { digitalWrite(led, HIGH); }
+        blink_timer.start();
+        while (!blink_timer.ready()) {};
+        for (int led : leds) { digitalWrite(led, LOW); }
+    }
+
+    //Мигание одним светодиодом
     blink_timer.start();
     while (!blink_timer.ready()) {};
     digitalWrite(pin, HIGH);
@@ -79,7 +89,7 @@ byte get_answer() //Функция для считывания нажатий п
         if (btns[color].isPressed()) { return color; }
     }
 
-    return 255;
+    return NONE_LED;
 }
 
 void start_game()
@@ -91,17 +101,20 @@ void start_game()
     }
 
     //Мигание светодиодами
-    for (int led : leds) { digitalWrite(led, HIGH); }
-    blink_timer.start();
-    while (!blink_timer.ready()) {};
-    for (int led : leds) { digitalWrite(led, LOW); }
+    led_blink();
 
     lcd.clear();
 }
 
 void lose()
 {
-    
+    //Мигание светодиодами
+    led_blink();
+
+    for (int text_i = 0; text_i < len(lose_text); text_i++)
+    {
+        lcd_print(lose_text[text_i], true);
+    }
 }
 
 void win(const bool &last_level = true, const int &level = 1)

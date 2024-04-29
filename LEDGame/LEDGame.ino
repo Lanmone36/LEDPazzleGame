@@ -10,6 +10,8 @@
 #define YELLOW_LED 10
 #define GREEN_LED 7
 
+#define NONE_LED 255//Любоу число от 0 до 255, кроме номеров пинов, которые заняты под кнопки
+
 //Пины кнопок
 #define RED_BUTTON 12
 #define YELLOW_BUTTON 9
