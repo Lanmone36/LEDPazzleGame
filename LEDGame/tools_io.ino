@@ -46,7 +46,7 @@ const char* win_text[2] = { "Congratulations,",
 
 //###################
 
-void lcd_print(const char** mess, const bool& delay = false) //Функция для вывода текста на дисплей
+void lcd_print(const char** mess, const bool& delay = false) //Функция для отображения текста на дисплей
 {
     for (int text_row = 0; text_row < LCD_ROWS; text_row++)
     {
@@ -54,15 +54,26 @@ void lcd_print(const char** mess, const bool& delay = false) //Функция д
         lcd.print(mess[text_row]);
     }
 
-    if (delay)
+    if (delay) //Задержка после отображения текста
     {
         lcd_update_timer.start();
         while (!lcd_update_timer.ready()) {};
     }
 }
 
-void led_blink(const byte& pin)
+void led_blink(const byte& pin = NONE_LED_BTN)
 {
+    if (pin == NONE_LED_BTN) //Если пин не указан, то мигание всеми светодиодами
+    {
+        for (int led : leds) { digitalWrite(led, HIGH); }
+        blink_timer.start();
+        while (!blink_timer.ready()) {};
+        for (int led : leds) { digitalWrite(led, LOW); }
+
+        return;
+    }
+
+    //мигание конкретным светодидом
     blink_timer.start();
     while (!blink_timer.ready()) {};
     digitalWrite(pin, HIGH);
@@ -70,16 +81,6 @@ void led_blink(const byte& pin)
     blink_timer.start();
     while (!blink_timer.ready()) {};
     digitalWrite(pin, LOW);
-}
-
-byte get_answer() //Функция для считывания нажатий пользователя на кнопки
-{
-    for (int color = 0; color < LED_COUNT; color++)
-    {
-        if (btns[color].isPressed()) { return color; }
-    }
-
-    return 255;
 }
 
 void start_game()
@@ -91,10 +92,7 @@ void start_game()
     }
 
     //Мигание светодиодами
-    for (int led : leds) { digitalWrite(led, HIGH); }
-    blink_timer.start();
-    while (!blink_timer.ready()) {};
-    for (int led : leds) { digitalWrite(led, LOW); }
+    led_blink();
 
     lcd.clear();
 }
@@ -112,6 +110,16 @@ void win(const bool &last_level = true, const int &level = 1)
     }*/
 
 
+}
+
+byte get_answer() //Функция для считывания нажатий пользователя на кнопки
+{
+    for (int btn = 0; btn < LED_BTN_COUNT; btn++)
+    {
+        if (btns[btn].isPressed()) { return btn; }
+    }
+
+    return NONE_LED_BTN;
 }
 
 void IOToolsInit()

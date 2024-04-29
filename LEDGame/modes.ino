@@ -1,5 +1,3 @@
-#define MAX_LEVEL 10001//Максимальное количество уровней
-
 void mode1()//�� ������ ������ � ����������������� ����������� ����� ����
 {
     byte levels[MAX_LEVEL];
@@ -26,7 +24,7 @@ void mode1()//�� ������ ������ � ������
         {
             user_ans = get_answer();
 
-            if (user_ans != 255) //������������ ����� �� ���� �� ������
+            if (user_ans != NONE_LED_BTN) //������������ ����� �� ���� �� ������
             {
                 digitalWrite(leds[user_ans], HIGH);
                 while (btns[user_ans].isPressed()) {};
