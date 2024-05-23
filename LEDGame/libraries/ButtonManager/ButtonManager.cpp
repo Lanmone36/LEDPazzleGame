@@ -1,27 +1,55 @@
 #include "ButtonManager.h"
 
-ButtonManager::ButtonManager(const byte* btn_pins) : _btn_pins(pins)
+ButtonManager::ButtonManager(const byte* btn_pins, const size_t& size)
 {
-	this->_len = sizeof(btn_pins) / sizeof(byte);
-	this->_btn_timers = new Timer[this->_len];
+	this->_len = size;
+	this->_btns = new btn_data[this->_len]; //Объявляем кнопки в памяти
 
-	for (byte pin : btn_pins)
+	for (size_t btn_ind = 0; btn_ind < this->_len; btn_ind++)
 	{
-		pinMode(pin, INPUT_PULLUP);
-		this->_btn_timers
+		this->_btns[btn_ind].pin = btn_pins[btn_ind];
+
+		pinMode(this->_btns[btn_ind].pin, INPUT_PULLUP);
 	}
 }
 
-byte ButtonManager::getPressedButton()
+ButtonManager::~ButtonManager()
 {
-	for (int btn = 0; btn < this->_len; btn++)
+	for (size_t btn_ind = 0; btn_ind < this->_len; btn_ind++)
 	{
-
+		delete this->_btns[btn_ind].tmr;
 	}
-	bool state = digitalRead(this->_pin);
 
-	if (!state){ this->_timer = millis(); }
-	if (state && (millis() - this->_timer) >= _DEB_BTN_TIME){ return false; }
+	delete[] this->_btns;
+}
 
-	return true;
+size_t ButtonManager::getPressedButton(const size_t& none_btn = NONE_BTN)
+{
+	for (size_t btn_ind = 0; btn_ind < this->_len; btn_ind++)
+	{
+		bool state = digitalRead(this->_btns[btn_ind].pin);
+
+		if (state == this->_btns[btn_ind].state)
+		{
+			this->_btns[btn_ind].tmr->start();
+		}
+
+		if (this->_btns[btn_ind].tmr->ready()) //Если произошло изменение
+		{
+			this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
+		}
+
+		if (this->_btns[btn_ind].state == false) //Если кнопка нажата
+		{
+			this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
+			return btn_ind;
+		}
+	}
+
+	return none_btn; //Если ни одна кнопка не нажата
+}
+
+size_t ButtonManager::size()
+{
+	return this->_len;
 }
