@@ -27,9 +27,11 @@ void setup()
 {
     Serial.begin(9600);
 
-    delete[] btn_init_list;
+    delete[] btn_init_list; //Освобождаем память
 }
 
 void loop()
 {
+  int a = btns.getPressedButton();
+  if (a != -1){Serial.println(a);}
 }
