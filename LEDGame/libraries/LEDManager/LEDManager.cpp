@@ -1,4 +1,4 @@
-#include "LEDManager.h"
+п»ї#include "LEDManager.h"
 
 LEDManager::LEDManager(const byte* led_pins, const size_t& size)
 {
@@ -11,6 +11,8 @@ LEDManager::LEDManager(const byte* led_pins, const size_t& size)
 	}
 
 	this->_tmr = new Timer(_BASIC_LED_BLINK_TIME);
+
+	this->_is_blink = false;
 }
 
 LEDManager::~LEDManager()
@@ -21,28 +23,35 @@ LEDManager::~LEDManager()
 
 void LEDManager::blink(const size_t& led_ind = NONE_LED, const uint16_t& prd = _BASIC_LED_BLINK_TIME)
 {
-	if (this->_tmr->isStop()) //Если до этого светодиоды были в состоянии "ожидания"
+	this->_is_blink = true;
+	this->led_ind = led_ind;
+	this->prd = prd;
+}
+
+void LEDManager::update()
+{
+	if (this->_tmr->isStop() && this->_is_blink) //Р•СЃР»Рё РґРѕ СЌС‚РѕРіРѕ СЃРІРµС‚РѕРґРёРѕРґС‹ Р±С‹Р»Рё РІ СЃРѕСЃС‚РѕСЏРЅРёРё "РѕР¶РёРґР°РЅРёСЏ"
 	{
 	    if (led_ind == NONE_LED)
 	    {
 		    for (size_t led_ind = 0; led_ind < this->_len; led_ind++)
 		    {
-			    digitalWrite(this->_led_pins[led_ind], HIGH); //Мигаем всеми светодиодами
+			    digitalWrite(this->_led_pins[led_ind], HIGH); //РњРёРіР°РµРј РІСЃРµРјРё СЃРІРµС‚РѕРґРёРѕРґР°РјРё
 		    }
 	    }
 		else
 		{
-			digitalWrite(this->_led_pins[led_ind], HIGH); ///Мигаем одним светодиодом
+			digitalWrite(this->_led_pins[led_ind], HIGH); ///РњРёРіР°РµРј РѕРґРЅРёРј СЃРІРµС‚РѕРґРёРѕРґРѕРј
 		}
 
-		//Устанавливаем время периода и запускаем таймер
+		//РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј РІСЂРµРјСЏ РїРµСЂРёРѕРґР° Рё Р·Р°РїСѓСЃРєР°РµРј С‚Р°Р№РјРµСЂ
 		this->_tmr->setPeriod(prd);
 		this->_tmr->start();
 
 		return;
 	}
 
-	if (this->_tmr->ready()) //Если период мигания прошёл
+	if (this->_tmr->ready()) //Р•СЃР»Рё РїРµСЂРёРѕРґ РјРёРіР°РЅРёСЏ РїСЂРѕС€С‘Р»
 	{
 		if (led_ind == NONE_LED)
 	    {
@@ -56,7 +65,8 @@ void LEDManager::blink(const size_t& led_ind = NONE_LED, const uint16_t& prd = _
 			digitalWrite(this->_led_pins[led_ind], LOW);
 		}
 
-		this->_tmr->stop(); //"Устанавливаем" светодиоды в режим "ожидания"
+		this->_tmr->stop();
+		this->_is_blink = false; //"РЈСЃС‚Р°РЅР°РІР»РёРІР°РµРј" СЃРІРµС‚РѕРґРёРѕРґС‹ РІ СЂРµР¶РёРј "РѕР¶РёРґР°РЅРёСЏ"
 	}
 
 	return;

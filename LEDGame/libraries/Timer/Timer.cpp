@@ -1,4 +1,4 @@
-#include "Timer.h"
+﻿#include "Timer.h"
 
 Timer::Timer(const uint16_t &prd)
 {

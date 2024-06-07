@@ -1,9 +1,9 @@
-#pragma once
+п»ї#pragma once
 
 #include <Arduino.h>
 #include "../Timer/Timer.cpp"
 
-#define _DEB_BTN_TIME 50 //Период времни для "заглушения" дребезга контактов
+#define _DEB_BTN_TIME 50 //РџРµСЂРёРѕРґ РІСЂРµРјРЅРё РґР»СЏ "Р·Р°РіР»СѓС€РµРЅРёСЏ" РґСЂРµР±РµР·РіР° РєРѕРЅС‚Р°РєС‚РѕРІ
 #define NONE_BTN -1
 
 struct btn_data
@@ -17,8 +17,8 @@ struct btn_data
 	}
 
 	byte pin;
-	Timer* tmr; //Массив таймеров для каждой кнопки, чтобы избегать дребезга
-	bool state : 1; //Не тратим лишнюю память с помощью битовых полей
+	Timer* tmr; //РњР°СЃСЃРёРІ С‚Р°Р№РјРµСЂРѕРІ РґР»СЏ РєР°Р¶РґРѕР№ РєРЅРѕРїРєРё, С‡С‚РѕР±С‹ РёР·Р±РµРіР°С‚СЊ РґСЂРµР±РµР·РіР°
+	bool state : 1; //РќРµ С‚СЂР°С‚РёРј Р»РёС€РЅСЋСЋ РїР°РјСЏС‚СЊ СЃ РїРѕРјРѕС‰СЊСЋ Р±РёС‚РѕРІС‹С… РїРѕР»РµР№
 };
 
 class ButtonManager
@@ -27,12 +27,12 @@ public:
 	ButtonManager(const byte* btn_pins, const size_t& size);
 	~ButtonManager();
 
-	size_t getPressedButton(const size_t& none_btn); //Метод для обработки зажатия кнопки. Возвращает порядковый номер нажатой кнокпи
-	size_t getClickedButton(); //Метод для обработки нажатия на кнопку
+	size_t getPressedButton(const size_t& none_btn); //РњРµС‚РѕРґ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё Р·Р°Р¶Р°С‚РёСЏ РєРЅРѕРїРєРё. Р’РѕР·РІСЂР°С‰Р°РµС‚ РїРѕСЂСЏРґРєРѕРІС‹Р№ РЅРѕРјРµСЂ РЅР°Р¶Р°С‚РѕР№ РєРЅРѕРєРїРё
+	size_t getClickedButton(); //РњРµС‚РѕРґ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё РЅР°Р¶Р°С‚РёСЏ РЅР° РєРЅРѕРїРєСѓ
 	size_t size();
 
 private:
 	btn_data* _btns = nullptr;
 
-	size_t _len; //Размер массива
+	size_t _len; //Р Р°Р·РјРµСЂ РјР°СЃСЃРёРІР°
 };

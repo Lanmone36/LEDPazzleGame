@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 
 #include <Arduino.h>
 //#include "../Timer/Timer.cpp"
@@ -13,10 +13,16 @@ public:
     ~LEDManager();
 
     void blink(const size_t& led_ind = NONE_LED,
-               const uint16_t& prd = _BASIC_LED_BLINK_TIME); //Метод для мигания светодиодом с заданным периодом. Если led_ind = NONE_LED, то мигает всеми светодиодами
+               const uint16_t& prd = _BASIC_LED_BLINK_TIME); //РњРµС‚РѕРґ РґР»СЏ РјРёРіР°РЅРёСЏ СЃРІРµС‚РѕРґРёРѕРґРѕРј СЃ Р·Р°РґР°РЅРЅС‹Рј РїРµСЂРёРѕРґРѕРј. Р•СЃР»Рё led_ind = NONE_LED, С‚Рѕ РјРёРіР°РµС‚ РІСЃРµРјРё СЃРІРµС‚РѕРґРёРѕРґР°РјРё
+    void update();
 private:
-    byte* _led_pins = nullptr; //массив пинов светодиодов
+    byte* _led_pins = nullptr; //РјР°СЃСЃРёРІ РїРёРЅРѕРІ СЃРІРµС‚РѕРґРёРѕРґРѕРІ
     Timer* _tmr = nullptr;
 
     size_t _len;
+    bool _is_blink;
+    size_t led_ind;
+    uint16_t prd;
+
+    
 };
