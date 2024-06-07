@@ -1,4 +1,4 @@
-﻿#include "ButtonManager.h"
+#include "ButtonManager.h"
 
 ButtonManager::ButtonManager(const byte* btn_pins, const size_t& size)
 {

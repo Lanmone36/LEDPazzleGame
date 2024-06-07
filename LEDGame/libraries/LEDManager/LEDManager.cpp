@@ -1,4 +1,4 @@
-﻿#include "LEDManager.h"
+#include "LEDManager.h"
 
 LEDManager::LEDManager(const byte* led_pins, const size_t& size)
 {
