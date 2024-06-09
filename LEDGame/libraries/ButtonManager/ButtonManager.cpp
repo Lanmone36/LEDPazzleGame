@@ -53,3 +53,9 @@ size_t ButtonManager::size()
 {
 	return this->_len;
 }
+
+void ButtonManager::update()
+{
+	/*Функция для глобального обновления состояний всех кнопок.
+	Вызывается внутри ключевых методов обработки*/
+}

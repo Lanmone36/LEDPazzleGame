@@ -2,6 +2,7 @@
 
 #define LED_BTN_COUNT 3 //Количество светодиодов
 #define MAX_LEVEL 10001//Максимальное количество уровней
+#define MODES_COUNT 3 //Количество уровней
 
 //Пины светодиодов
 #define RED_LED 13
@@ -23,11 +24,17 @@
 byte* btn_init_list = new byte[LED_BTN_COUNT]{RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON}; //Костыль, но мне нравится
 ButtonManager btns(btn_init_list, LED_BTN_COUNT);
 
+struct UserData
+{
+  uint8_t best_scores[MODES_COUNT]{0}; //массив для хранения лучших результатов в режимах
+  bool sound = true: 1; //Флаг для включения/выключения игровых звуков
+} user;
+
 void setup()
 {
     Serial.begin(9600);
 
-    delete[] btn_init_list;
+    delete[] btn_init_list; //Освобождаем память
 }
 
 void loop()
