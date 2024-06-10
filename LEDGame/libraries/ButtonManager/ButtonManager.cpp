@@ -3,7 +3,7 @@
 ButtonManager::ButtonManager(const byte* btn_pins, const size_t& size)
 {
 	this->_len = size;
-	this->_btns = new btn_data[this->_len]; //Объявляем кнопки в памяти
+	this->_btns = new btn_data[this->_len]; //РћР±СЉСЏРІР»СЏРµРј РєРЅРѕРїРєРё РІ РїР°РјСЏС‚Рё
 
 	for (size_t btn_ind = 0; btn_ind < this->_len; btn_ind++)
 	{
@@ -34,19 +34,19 @@ size_t ButtonManager::getPressedButton(const size_t& none_btn = NONE_BTN)
 			this->_btns[btn_ind].tmr->start();
 		}
 
-		if (this->_btns[btn_ind].tmr->ready()) //Если произошло изменение
+		if (this->_btns[btn_ind].tmr->ready()) //Р•СЃР»Рё РїСЂРѕРёР·РѕС€Р»Рѕ РёР·РјРµРЅРµРЅРёРµ
 		{
 			this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
 		}
 
-		if (this->_btns[btn_ind].state == false) //Если кнопка нажата
+		if (this->_btns[btn_ind].state == false) //Р•СЃР»Рё РєРЅРѕРїРєР° РЅР°Р¶Р°С‚Р°
 		{
 			this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
 			return btn_ind;
 		}
 	}
 
-	return none_btn; //Если ни одна кнопка не нажата
+	return none_btn; //Р•СЃР»Рё РЅРё РѕРґРЅР° РєРЅРѕРїРєР° РЅРµ РЅР°Р¶Р°С‚Р°
 }
 
 size_t ButtonManager::size()
