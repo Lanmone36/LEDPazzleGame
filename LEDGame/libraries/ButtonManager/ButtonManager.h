@@ -33,12 +33,7 @@ public:
 
 private:
 	btn_data* _btns = nullptr;
-
-<<<<<<< HEAD
-	size_t _len; //������ �������
+	size_t _len; //Размер массива
 
 	void update();
-=======
-	size_t _len; //Размер массива
->>>>>>> 8953368e4c0ec31518ec08bf0bdc067cadb3616c
 };
