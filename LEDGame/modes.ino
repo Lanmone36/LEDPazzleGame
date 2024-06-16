@@ -7,8 +7,9 @@ bool is_next_lvl = false; //Нужна для корректного перех�
 void _set_basic();
 void _lose();
 void _win();
+void check_time();
 
-Timer delay_tmr(500); //Таймер задержки после мигания светодиодов
+Timer delay_tmr(1000); //Таймер задержки после мигания светодиодов
 
 void game_mode1()
 {
@@ -20,7 +21,9 @@ void game_mode1()
     return;
   }
 
-  if (delay_tmr.ready() || delay_tmr.isStop())
+  check_time();
+
+  if (delay_tmr.isStop())
   {
     if (is_next_lvl)
     { 
@@ -28,6 +31,8 @@ void game_mode1()
       {
         leds.blink(lvls[cur_lvl]);
         cur_lvl++;
+
+        delay_tmr.start();
       }
   
       if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
@@ -35,6 +40,8 @@ void game_mode1()
     else
     {
       leds.blink();
+
+      delay_tmr.start();
     
       lvls[state] = random(LED_BTN_COUNT);
       is_next_lvl = true;
@@ -56,3 +63,11 @@ void _set_basic()
 void lose(){};
 
 void win(){};
+
+void check_time()
+{
+  if (delay_tmr.ready())
+  {
+    delay_tmr.stop();
+  }
+}

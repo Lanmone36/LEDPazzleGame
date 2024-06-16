@@ -65,9 +65,5 @@ void setup() {
 void loop() {
   update();
 
-  //game_mode1();
-  leds.changeState(2);
-  Serial.println(digitalRead(A2));
-  Serial.println(analogRead(A2));
-  delay(1000);
+  game_mode1();
 }

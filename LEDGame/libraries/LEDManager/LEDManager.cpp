@@ -8,6 +8,7 @@ LEDManager::LEDManager(const byte* led_pins, const size_t& size)
 	for (size_t _led_ind = 0; _led_ind < this->_len; _led_ind++)
 	{
 		this->_led_pins[_led_ind] = led_pins[_led_ind];
+		pinMode(this->_led_pins[_led_ind], OUTPUT);
 	}
 
 	this->_tmr = new Timer(_BASIC_LED_BLINK_TIME);
@@ -50,12 +51,12 @@ void LEDManager::update()
 			{
 				for (size_t _led_ind = 0; _led_ind < this->_len; _led_ind++)
 				{
-					analogWrite(this->_led_pins[_led_ind], 1023); //Мигаем всеми светодиодами
+					digitalWrite(this->_led_pins[_led_ind], HIGH); //Мигаем всеми светодиодами
 				}
 			}
 			else
 			{
-				analogWrite(this->_led_pins[this->led_ind], 1023); ///Мигаем одним светодиодом
+				digitalWrite(this->_led_pins[this->led_ind], HIGH); ///Мигаем одним светодиодом
 			}
 
 			//Устанавливаем время периода и запускаем таймер
@@ -71,12 +72,12 @@ void LEDManager::update()
 			{
 				for (size_t _led_ind = 0; _led_ind < this->_len; _led_ind++)
 				{
-					analogWrite(this->_led_pins[_led_ind], 0);
+					digitalWrite(this->_led_pins[_led_ind], LOW);
 				}
 			}
 			else
 			{
-				analogWrite(this->_led_pins[this->led_ind], 0);
+				digitalWrite(this->_led_pins[this->led_ind], LOW);
 			}
 
 			this->_tmr->stop();
@@ -92,13 +93,13 @@ void LEDManager::update()
 		{
 			for (size_t _led_ind = 0; _led_ind < this->_len; _led_ind++)
 			{
-				analogWrite(this->_led_pins[_led_ind], !digitalRead(this->_led_pins[_led_ind]) ? 1023 : 0);
+				digitalWrite(this->_led_pins[_led_ind], !digitalRead(this->_led_pins[_led_ind]));
 			}
 		}
 		
 		else
 		{
-			analogWrite(this->_led_pins[this->led_ind], !digitalRead(this->_led_pins[this->led_ind]) ? 1023 : 0);
+			digitalWrite(this->_led_pins[this->led_ind], !digitalRead(this->_led_pins[this->led_ind]));
 		}
 
 		this->_state = _free;
