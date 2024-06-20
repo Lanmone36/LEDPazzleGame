@@ -10,7 +10,6 @@ struct btn_data
 {
 	btn_data()
 	{
-		pin = 0;
 		state = 1;
 
 		tmr = new Timer(_DEB_BTN_TIME);

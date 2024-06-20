@@ -1,6 +1,8 @@
 #include "./libraries/ButtonManager/ButtonManager.cpp"
 #include "./libraries/LEDManager/LEDManager.cpp"
 
+#define _BASIC_LED_BLINK_TIME 500 //Переопределение для более удобного обращения
+
 #define LED_BTN_COUNT 3 //Количество светодиодов
 #define MAX_LEVEL 10001//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
@@ -60,6 +62,8 @@ void setup() {
 
   delete[] btn_init_list; //Освобождаем память
   delete[] led_init_list;  //Освобождаем память
+
+  delay(1500);
 }
 
 void loop() {
