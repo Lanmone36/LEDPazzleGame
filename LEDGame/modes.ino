@@ -1,7 +1,7 @@
 //########## Игровые переменные ##########
 uint8_t state = 0, cur_lvl = 0; //Последний пройденный уровень и текущий соответственно
 byte lvls[MAX_LEVEL]; //Массив для хранения цветов на каждом уровне
-byte cur_user_ans = NONE_LED_BTN, last_user_ans; //Переменые для хранения предыдущей и текущей нажатых пользователем кнопок соответственно
+size_t cur_user_ans = NONE_LED_BTN, last_user_ans = NONE_LED_BTN; //Переменые для хранения предыдущей и текущей нажатых пользователем кнопок соответственно
 bool is_next_lvl = false; //Нужна для корректного перехода на новые уровни
 
 //########## Общие функции ##########
@@ -31,7 +31,6 @@ void game_mode1()
   {
     if (is_next_lvl)
     { 
-      Serial.println(1);
       leds.blink(lvls[cur_lvl]);
       cur_lvl++;
   
@@ -42,40 +41,37 @@ void game_mode1()
       return;
     }
     
-    if (cur_lvl == 0)
+    if (cur_lvl == state)
     {
-      Serial.println(0);
         leds.blink();
     
         lvls[state] = random(LED_BTN_COUNT);
         is_next_lvl = true;
+        cur_lvl = 0;
         state++;
         delay_tmr.start();
-          
+
         return;
     }
 
-//      cur_user_ans = btns.getPressedButton();
-//
-//      if (cur_user_ans != NONE_LED_BTN)
-//      {
-//        if (last_user_ans == NONE_LED_BTN)
-//        {
-//          last_user_ans = cur_user_ans;
-//          leds.setState(cur_user_ans, HIGH);
-//          }
-//        else if (cur_user_ans != last_user_ans && last_user_ans != NONE_LED_BTN)
-//      {
-//          leds.setState(last_user_ans, LOW);
-//
-//          if (last_user_ans == lvls[cur_lvl]) {cur_lvl++;}
-//          else {_set_basic();}
-//          delay_tmr.start();
-//      }
-//      }
-//      else
-//      {last_user_ans = NONE_LED_BTN;
-//        }
+      cur_user_ans = btns.getPressedButton(); //Получаем нажатую пользователем кнопку (или NONE_LED_BTN, если твких кнопок нет)
+
+      if (cur_user_ans != NONE_LED_BTN) //Если кнопка была нажата
+      {
+        if (last_user_ans == NONE_LED_BTN) //Если это первое нажатие
+        {
+          last_user_ans = cur_user_ans;
+          leds.setState(cur_user_ans, HIGH);
+        }
+      }
+      
+      if (cur_user_ans != last_user_ans)
+      {
+          leds.setState(last_user_ans, LOW);
+
+          if (last_user_ans == lvls[cur_lvl]) {cur_lvl++; last_user_ans = NONE_LED_BTN;}
+          else {_set_basic(); _lose();}
+      }
     }
 }
 

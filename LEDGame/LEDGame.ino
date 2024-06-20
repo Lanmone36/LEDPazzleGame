@@ -62,8 +62,6 @@ void setup() {
 
   delete[] btn_init_list; //Освобождаем память
   delete[] led_init_list;  //Освобождаем память
-
-  delay(1500);
 }
 
 void loop() {

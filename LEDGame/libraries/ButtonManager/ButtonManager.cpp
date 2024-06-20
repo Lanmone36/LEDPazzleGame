@@ -34,14 +34,14 @@ size_t ButtonManager::getPressedButton(const size_t& none_btn = NONE_BTN)
 			this->_btns[btn_ind].tmr->start();
 		}
 
-		if (this->_btns[btn_ind].tmr->ready()) //Если произошло изменение
+		if (this->_btns[btn_ind].tmr->ready()) //Если произошло изменение cостояния
 		{
 			this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
 		}
 
 		if (this->_btns[btn_ind].state == false) //Если кнопка нажата
 		{
-			this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
+			//this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
 			return btn_ind;
 		}
 	}
