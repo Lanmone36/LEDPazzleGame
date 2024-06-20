@@ -3,7 +3,7 @@
 Timer::Timer(const uint16_t &prd, const bool& auto_start = false)
 {
 	this->setPeriod(prd);
-	this->_isStop = auto_start;
+	this->_isStop = !auto_start;
 }
 
 void Timer::start()
