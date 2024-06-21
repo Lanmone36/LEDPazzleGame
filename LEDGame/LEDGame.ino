@@ -1,5 +1,7 @@
 #include "./libraries/ButtonManager/ButtonManager.cpp"
 #include "./libraries/LEDManager/LEDManager.cpp"
+#include "./libraries/LCDManager/LCDManager.cpp"
+#include "_texts.h"
 
 #define _BASIC_LED_BLINK_TIME 500 //Переопределение для более удобного обращения
 
@@ -28,6 +30,12 @@
 
 byte* btn_init_list = new byte[LED_BTN_COUNT]{ RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };  //Костыль, но мне нравится
 ButtonManager btns(btn_init_list, LED_BTN_COUNT);
+byte* led_init_list = new byte[LED_BTN_COUNT]{ RED_LED, YELLOW_LED, GREEN_LED };  //Костыль, но мне нравится
+LEDManager leds(led_init_list, LED_BTN_COUNT);
+
+LiquidCrystal_I2C a(LCD_ADDR, LCD_COLS, LCD_ROWS);
+
+LCDManager lcd_func(&a, LCD_ROWS);
 
 //Структура для хранения пользовательской информации
 struct UserData
@@ -50,15 +58,14 @@ enum GameStates
   sound //Вкл./Выкл. звук
 } State;
 
-byte* led_init_list = new byte[LED_BTN_COUNT]{ RED_LED, YELLOW_LED, GREEN_LED };  //Костыль, но мне нравится
-LEDManager leds(led_init_list, LED_BTN_COUNT);
-
 void update() {
   leds.update();
 }
 
 void setup() {
   Serial.begin(9600);
+  
+  lcd_func.begin();
 
   delete[] btn_init_list; //Освобождаем память
   delete[] led_init_list;  //Освобождаем память

@@ -87,9 +87,9 @@ void _set_basic()
   cur_lvl = 0;
 }
 
-void lose(){};
+void _lose(){lcd_func.print(test111);};
 
-void win(){};
+void _win(){};
 
 void check_time()
 {
