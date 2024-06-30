@@ -1,5 +1,5 @@
 //########## Игровые переменные ##########
-uint8_t state = 0, cur_lvl = 0; //Последний пройденный уровень и текущий соответственно
+uint16_t state = 0, cur_lvl = 0; //Последний пройденный уровень и текущий соответственно
 byte lvls[MAX_LEVEL]; //Массив для хранения цветов на каждом уровне
 size_t cur_user_ans = NONE_LED_BTN, last_user_ans = NONE_LED_BTN; //Переменые для хранения предыдущей и текущей нажатых пользователем кнопок соответственно
 bool is_next_lvl = false; //Нужна для корректного перехода на новые уровни
@@ -8,9 +8,9 @@ bool is_next_lvl = false; //Нужна для корректного перех�
 void _set_basic();
 void _lose();
 void _win();
-void check_time();
+void _check_time();
 
-Timer delay_tmr(_BASIC_LED_BLINK_TIME + 500); //Таймер задержки после мигания светодиодов (после мигания игра приостановится на 500 миллисекунд)
+Timer delay_tmr(_BASIC_LED_BLINK_TIME + LED_BLINK_DELAY_TIME); //Таймер задержки после мигания светодиодов (после мигания игра приостановится на 500 миллисекунд)
 /*Вместо таймеров и прочего можно было просто использовать delay.
 В этом проекте это даже более удобно и уместно.
 Но мне хотелоь сделать полностью "синхронный" код*/
@@ -25,7 +25,7 @@ void game_mode1()
     return;
   }
 
-  check_time();
+  _check_time();
 
   if (delay_tmr.isStop())
   {
@@ -35,20 +35,22 @@ void game_mode1()
       cur_lvl++;
   
       if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
-
-      delay_tmr.start();
+      else {delay_tmr.start();}
 
       return;
     }
     
     if (cur_lvl == state)
     {
-        leds.blink();
-    
+         leds.blink();
+         lcd.setCursor(0, 0);
+         lcd.print(win[(cur_lvl%2)]);
+         
         lvls[state] = random(LED_BTN_COUNT);
         is_next_lvl = true;
         cur_lvl = 0;
         state++;
+        
         delay_tmr.start();
 
         return;
@@ -69,7 +71,11 @@ void game_mode1()
       {
           leds.setState(last_user_ans, LOW);
 
-          if (last_user_ans == lvls[cur_lvl]) {cur_lvl++; last_user_ans = NONE_LED_BTN;}
+          if (last_user_ans == lvls[cur_lvl])
+          {
+              cur_lvl++;
+              last_user_ans = NONE_LED_BTN;
+          }
           else {_set_basic(); _lose();}
       }
     }
@@ -87,11 +93,11 @@ void _set_basic()
   cur_lvl = 0;
 }
 
-void _lose(){lcd_func.print(test111);};
+void _lose(){};
 
 void _win(){};
 
-void check_time()
+void _check_time()
 {
   if (delay_tmr.ready())
   {
