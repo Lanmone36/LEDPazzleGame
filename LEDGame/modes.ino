@@ -31,7 +31,7 @@ void game_mode1()
   {
     if (is_next_lvl)
     { 
-      leds.blink(lvls[cur_lvl]);
+      leds[lvls[cur_lvl]].blink();
       cur_lvl++;
   
       if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
@@ -42,7 +42,7 @@ void game_mode1()
     
     if (cur_lvl == state)
     {
-         leds.blink();
+         //leds.blink();
          lcd.setCursor(0, 0);
          lcd.print(win[(cur_lvl%2)]);
          
@@ -56,28 +56,28 @@ void game_mode1()
         return;
     }
 
-      cur_user_ans = btns.getPressedButton(); //Получаем нажатую пользователем кнопку (или NONE_LED_BTN, если твких кнопок нет)
-
-      if (cur_user_ans != NONE_LED_BTN) //Если кнопка была нажата
-      {
-        if (last_user_ans == NONE_LED_BTN) //Если это первое нажатие
-        {
-          last_user_ans = cur_user_ans;
-          leds.setState(cur_user_ans, HIGH);
-        }
-      }
-      
-      if (cur_user_ans != last_user_ans)
-      {
-          leds.setState(last_user_ans, LOW);
-
-          if (last_user_ans == lvls[cur_lvl])
-          {
-              cur_lvl++;
-              last_user_ans = NONE_LED_BTN;
-          }
-          else {_set_basic(); _lose();}
-      }
+//      cur_user_ans = btns.getPressedButton(); //Получаем нажатую пользователем кнопку (или NONE_LED_BTN, если твких кнопок нет)
+//
+//      if (cur_user_ans != NONE_LED_BTN) //Если кнопка была нажата
+//      {
+//        if (last_user_ans == NONE_LED_BTN) //Если это первое нажатие
+//        {
+//          last_user_ans = cur_user_ans;
+//          leds.setState(cur_user_ans, HIGH);
+//        }
+//      }
+//      
+//      if (cur_user_ans != last_user_ans)
+//      {
+//          leds.setState(last_user_ans, LOW);
+//
+//          if (last_user_ans == lvls[cur_lvl])
+//          {
+//              cur_lvl++;
+//              last_user_ans = NONE_LED_BTN;
+//          }
+//          else {_set_basic(); _lose();}
+//      }
     }
 }
 

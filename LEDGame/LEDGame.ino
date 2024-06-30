@@ -1,5 +1,5 @@
-#include "./libraries/ButtonManager/ButtonManager.cpp"
-#include "./libraries/LEDManager/LEDManager.cpp"
+#include "./libraries/Button/Button.cpp"
+#include "./libraries/LED/LED.cpp"
 #include "_texts.h"
 #include <LiquidCrystal_I2C.h>
 
@@ -17,9 +17,9 @@
 #define GREEN_LED 13
 
 //Пины кнопок
-#define RED_BUTTON 6
-#define YELLOW_BUTTON 9
-#define GREEN_BUTTON 12
+#define RED_BTN 6
+#define YELLOW_BTN 9
+#define GREEN_BTN 12
 
 #define NONE_LED_BTN -1  //Любое число, кроме пинов под светодиоды и кнопоки
 
@@ -28,10 +28,8 @@
 #define LCD_ROWS 2
 #define LCD_ADDR 0x27
 
-byte* a = new byte[LED_BTN_COUNT]{ RED_BUTTON, YELLOW_BUTTON, GREEN_BUTTON };
-ButtonManager btns(a, LED_BTN_COUNT);
-byte* b = new byte[LED_BTN_COUNT]{ RED_LED, YELLOW_LED, GREEN_LED };
-LEDManager leds(b, LED_BTN_COUNT);
+Button btns[LED_BTN_COUNT] = {RED_BTN, YELLOW_BTN, GREEN_BTN};
+LED leds[LED_BTN_COUNT] = {RED_LED, YELLOW_LED, GREEN_LED};
 
 //LCDManager lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
@@ -62,7 +60,10 @@ enum GameStates
 } State, LastState;
 
 void update() {
-  leds.update();
+  for (byte led_ind = 0; led_ind < LED_BTN_COUNT; led_ind++)
+  {
+    leds[led_ind].update();
+  }
 }
 
 void setup() {
@@ -70,9 +71,6 @@ void setup() {
   
   lcd.init();
   lcd.backlight();
-
-  delete[] a;
-  delete[] b;
 
   State = _menu_mode1;
   LastState = _menu_sound; //Или любое другое состояние, кроме State
@@ -142,17 +140,14 @@ void loop() {
         break;
   }
 
-  if (btns.getPressedButton() != NONE_LED_BTN)
+  if (btns[0].isPressed()) //Первая кнопка
   {
-    if (btns.getPressedButton() == 0) //Первая кнопка
-    {
-      State = State - 1;
-      if (_menu_mode1 > State) {State = _menu_sound;}
-    }
-    else if (btns.getPressedButton() == (LED_BTN_COUNT-1)) //Последняя кнопка
-    {
-      State = State + 1;
-      if (_menu_sound < State) {State = _menu_mode1;}
-    }
+    State = State - 1;
+    if (_menu_mode1 > State) {State = _menu_sound;}
+  }
+  else if (btns[LED_BTN_COUNT-1].isPressed()) //Последняя кнопка
+  {
+    State = State + 1;
+    if (_menu_sound < State) {State = _menu_mode1;}
   }
 }
