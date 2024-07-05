@@ -10,6 +10,7 @@
 #define MAX_LEVEL 256//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
 #define LED_BTN_COUNT 3  //Количество светодиодов
+#define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Средняя кнопка
 
 //Пины светодиодов
 #define RED_LED A2
@@ -21,7 +22,7 @@
 #define YELLOW_BTN 9
 #define GREEN_BTN 12
 
-#define NONE_LED_BTN -1  //Любое число, кроме пинов под светодиоды и кнопоки
+#define NONE_LED_BTN 255  //Любое положительное число, кроме пинов под светодиоды и кнопоки
 
 //Параметры дисплея
 #define LCD_COLS 16
@@ -33,12 +34,14 @@ LED leds[LED_BTN_COUNT] = {RED_LED, YELLOW_LED, GREEN_LED};
 
 //LCDManager lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
+Timer lcd_clear_tmr(750); //Нужен для плавного очищения всего экрана через определённое время
 
 //Структура для хранения пользовательской информации
 struct UserData
 {
   uint16_t best_scores[MODES_COUNT]{0}; //массив для хранения лучших результатов в режимах
   bool sound : 1; //Флаг для включения/выключения игровых звуков
+  bool _is_game: 1;
 } User;
 
 
@@ -59,10 +62,19 @@ enum GameStates
   //######
 } State, LastState;
 
-void update() {
-  for (byte led_ind = 0; led_ind < LED_BTN_COUNT; led_ind++)
+void leds_update() {
+  for (byte _led_ind = 0; _led_ind < LED_BTN_COUNT; _led_ind++)
   {
-    leds[led_ind].update();
+    leds[_led_ind].update();
+  }
+}
+
+void lcd_update()
+{
+  if (lcd_clear_tmr.ready())
+  {
+    lcd.clear();
+    lcd_clear_tmr.stop();
   }
 }
 
@@ -77,7 +89,8 @@ void setup() {
 }
 
 void loop() {
-  update();
+  leds_update();
+  lcd_update();
   
   switch (State)
   {
@@ -96,6 +109,20 @@ void loop() {
 
             LastState = State;
         }
+
+         #if (LED_BTN_COUNT%2) //Если кнопок нечётное количество
+         if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
+         {
+            State = _game_mode1;
+            User._is_game = true;
+         }
+         #else
+         if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средняя кнопка
+         {
+            State = _game_mode1;
+            User._is_game = true;
+         }
+         #endif
 
         break;
     case _menu_mode2:
@@ -140,14 +167,17 @@ void loop() {
         break;
   }
 
-  if (btns[0].isPressed()) //Первая кнопка
+  if (!User._is_game)
   {
-    State = State - 1;
-    if (_menu_mode1 > State) {State = _menu_sound;}
-  }
-  else if (btns[LED_BTN_COUNT-1].isPressed()) //Последняя кнопка
-  {
-    State = State + 1;
-    if (_menu_sound < State) {State = _menu_mode1;}
+    if (btns[0].isClicked()) //Первая кнопка
+    {
+      State = State - 1;
+      if (_menu_mode1 > State) {State = _menu_sound;}
+    }
+    else if (btns[LED_BTN_COUNT-1].isClicked()) //Последняя кнопка
+    {
+      State = State + 1;
+      if (_menu_sound < State) {State = _menu_mode1;}
+    }
   }
 }

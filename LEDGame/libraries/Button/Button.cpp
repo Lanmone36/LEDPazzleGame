@@ -15,7 +15,26 @@ Button::~Button()
 
 bool Button::isPressed()
 {
+	this->update();
+
+	return !this->_states._pressed; //Так как кнопка "подтянута" к высокому уровню питания, то при нажатии _pressed == false
+}
+
+bool Button::isClicked()
+{
+	this->update();
+
+	return this->_states._clicked;
+}
+
+void Button::update()
+{
+	/*Функция для глобального обновления состояний всех кнопок.
+	Вызывается внутри ключевых методов обработки*/
+
 	bool state = digitalRead(this->_pin);
+
+	this->_states._clicked = false;
 
 	if (state == this->_states._pressed)
 	{
@@ -25,19 +44,10 @@ bool Button::isPressed()
 	if (this->_tmr->ready()) //Если произошло изменение cостояния
 	{
 		this->_states._pressed = !this->_states._pressed;
+
+		if (!state) //Если кнопка нажата
+		{
+			this->_states._clicked = true;
+		}
 	}
-
-	if (!this->_states._pressed) //Если кнопка нажата
-	{
-		//this->_btns[btn_ind].state = !this->_btns[btn_ind].state;
-		return true;
-	}
-
-	return false;
-}
-
-void Button::update()
-{
-	/*Функция для глобального обновления состояний всех кнопок.
-	Вызывается внутри ключевых методов обработки*/
 }
