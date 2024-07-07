@@ -9,7 +9,6 @@
 #define LED_BTN_COUNT 3 //Количество светодиодов
 #define MAX_LEVEL 256//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
-#define LED_BTN_COUNT 3  //Количество светодиодов
 #define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Средняя кнопка
 
 //Пины светодиодов
