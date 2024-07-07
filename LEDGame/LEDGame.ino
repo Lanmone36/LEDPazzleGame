@@ -7,9 +7,9 @@
 #define LED_BLINK_DELAY_TIME 500 //Задержка после мигания светодиодом
 
 #define LED_BTN_COUNT 3 //Количество светодиодов
+#define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Индекс средней кнопки
 #define MAX_LEVEL 256//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
-#define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Средняя кнопка
 
 //Пины светодиодов
 #define RED_LED A2
