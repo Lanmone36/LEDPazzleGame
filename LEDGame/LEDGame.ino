@@ -7,9 +7,10 @@
 #define LED_BLINK_DELAY_TIME 500 //Задержка после мигания светодиодом
 
 #define LED_BTN_COUNT 3 //Количество светодиодов
-#define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Индекс средней кнопки
 #define MAX_LEVEL 256//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
+#define LED_BTN_COUNT 3  //Количество светодиодов
+#define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Средняя кнопка
 
 //Пины светодиодов
 #define RED_LED A2
@@ -28,6 +29,9 @@
 #define LCD_ROWS 2
 #define LCD_ADDR 0x27
 
+#define lcd_print(pstr) lcd.print((const __FlashStringHelper*)(pstr)) //Макрос для преобразования PROGMEM-строк в тип __FlashStringHelper*
+                                                                      //для их правильного чтения и передачи в метод lcd.print()
+
 #define LCD_CLEAR_TIME 750 //Время, после которого диспелей очищается
 #define LCD_DELAY_TIME 610//Время задержки какого-либо кода после вывода текста на дисплей
 
@@ -39,6 +43,7 @@ Button btns[LED_BTN_COUNT] = {RED_BTN, YELLOW_BTN, GREEN_BTN};
 LED leds[LED_BTN_COUNT] = {RED_LED, YELLOW_LED, GREEN_LED};
 
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
+
 Timer lcd_clear_tmr(LCD_CLEAR_TIME); //Нужен для очищения всего экрана через определённое время
 
 //Структура для хранения пользовательской информации
@@ -112,10 +117,10 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 0);
-            lcd.print(_b_score);
+            lcd_print(_b_score);
             lcd.print(User.b_scores[0]);
             lcd.setCursor(0, 1);
-            lcd.print(menu[0]);
+            lcd_print(menu[0]);
 
             LastState = State;
         }
@@ -136,10 +141,10 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 0);
-            lcd.print(_b_score);
+            lcd_print(_b_score);
             lcd.print(User.b_scores[1]);
             lcd.setCursor(0, 1);
-            lcd.print(menu[1]);
+            lcd_print(menu[1]);
 
             LastState = State;
         }
@@ -150,10 +155,10 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 0);
-            lcd.print(_b_score);
+            lcd_print(_b_score);
             lcd.print(User.b_scores[2]);
             lcd.setCursor(0, 1);
-            lcd.print(menu[2]);
+            lcd_print(menu[2]);
 
             LastState = State;
         }
@@ -164,8 +169,8 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 1);
-            lcd.print(menu[3]);
-            lcd.print(User.sound? "ON": "OFF");
+            lcd_print(menu[3]);
+            lcd_print(sound_mode[User.sound]);
 
             LastState = State;
         }
@@ -177,10 +182,10 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 0);
-            lcd.print(_b_score);
+            lcd_print(_b_score);
             lcd.print(User.b_scores[0]);
             lcd.setCursor(0, 1);
-            lcd.print(menu[0]);
+            lcd_print(menu[0]);
 
             LastState = State;
         }
@@ -199,10 +204,10 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 0);
-            lcd.print(_b_score);
+            lcd_print(_b_score);
             lcd.print(User.b_scores[1]);
             lcd.setCursor(0, 1);
-            lcd.print(menu[1]);
+            lcd_print(menu[1]);
 
             LastState = State;
         }
@@ -213,10 +218,10 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 0);
-            lcd.print(_b_score);
+            lcd_print(_b_score);
             lcd.print(User.b_scores[2]);
             lcd.setCursor(0, 1);
-            lcd.print(menu[2]);
+            lcd_print(menu[2]);
 
             LastState = State;
         }
@@ -227,8 +232,8 @@ void loop() {
         {
             lcd.clear();
             lcd.setCursor(0, 1);
-            lcd.print(menu[3]);
-            lcd.print(User.sound? "ON": "OFF");
+            lcd_print(menu[3]);
+            lcd_print(sound_mode[User.sound]);
 
             LastState = State;
         }

@@ -83,7 +83,7 @@ void game_mode1()
          if (state != 0)
          {
            lcd.setCursor(0, 0);
-           lcd.print(win[(bool)(cur_lvl%5)]);
+           lcd_print(win[(bool)(cur_lvl%5)]);
            lcd_clear_tmr.start();
          }
          
@@ -140,7 +140,7 @@ void _set_basic()
 
 void _lose_()
 {
-   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd.print(lose[l_s_cnt]);}
+   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd_print(lose[l_s_cnt]);}
 
    if (delay_lcd_tmr.ready())
    {
@@ -148,7 +148,7 @@ void _lose_()
       
       lcd.clear(); //Нужна для удаления символов лишней строки, так как длина строки _score меньше
                    //длины строки дисплея (сделано для тог, чтобы было удобно выводить очки)
-      lcd.print(lose[l_s_cnt]);
+      lcd_print(lose[l_s_cnt]);
    }
 
    if (l_s_cnt == 1)
@@ -165,14 +165,14 @@ void _lose_()
 
 void _start_()
 {
-   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd.print(start[l_s_cnt]);}
+   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd_print(start[l_s_cnt]);}
 
    if (delay_lcd_tmr.ready())
    {
       l_s_cnt++;
       
       lcd.clear();
-      lcd.print(start[l_s_cnt]);
+      lcd_print(start[l_s_cnt]);
    }
 
    if (l_s_cnt == 1)

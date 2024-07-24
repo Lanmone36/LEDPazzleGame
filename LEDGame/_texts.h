@@ -2,23 +2,26 @@
 
 //########## Весь текст ##########
 // Результаты
-const char _score[] =   "     score: ";
-const char _b_score[] = "best score: ";
+const char _score[] PROGMEM   =   "     score: ";
+const char _b_score[] PROGMEM = "best score: ";
 // Проигрышь
-const char _lose[] =     "  You've lost!  ";
+const char _lose[] PROGMEM    =     "  You've lost!  ";
 // Победа
-const char _win_1[] =   "  Excellently!  ";
-const char _win_2[] =   "     Great!     ";
-const char _win_3[] =   "Congratulations!";
-const char _win_4[] =   "  You've won!!  ";
+const char _win_1[] PROGMEM   =   "  Excellently!  ";
+const char _win_2[] PROGMEM   =   "     Great!     ";
+const char _win_3[] PROGMEM   =   "Congratulations!";
+const char _win_4[] PROGMEM   =   "  You've won!!  ";
 // Старт игры
-const char _start_1[] = "     READY!     ";
-const char _start_2[] = "      !GO!      ";
+const char _start_1[] PROGMEM = "     READY!     ";
+const char _start_2[] PROGMEM = "      !GO!      ";
 // Меню
-const char _menu_1[] =  "     mode 1     ";
-const char _menu_2[] =  "     mode 2     ";
-const char _menu_3[] =  "     mode 3     ";
-const char _menu_4[] =  "   Sounds: ";
+const char _menu_1[] PROGMEM  =  "     mode 1     ";
+const char _menu_2[] PROGMEM  =  "     mode 2     ";
+const char _menu_3[] PROGMEM  =  "     mode 3     ";
+const char _menu_4[] PROGMEM  =  "   Sounds: ";
+//Звук
+const char _sound_1[] PROGMEM =  "OFF";
+const char _sound_2[] PROGMEM =  "ON";
 //##########
 
 const char* const menu[] = {_menu_1,
@@ -37,3 +40,6 @@ const char* const lose[] = {_lose,
 
 const char* const win[] = {_win_1,
                            _win_2};
+
+const char* const sound_mode[] = {_sound_1,
+                                  _sound_2};
