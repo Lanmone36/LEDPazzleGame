@@ -16,8 +16,8 @@ const char _start_1[] PROGMEM = "     READY!     ";
 const char _start_2[] PROGMEM = "      !GO!      ";
 // Меню
 const char _menu_1[] PROGMEM  =  "     mode 1     ";
-const char _menu_2[] PROGMEM  =  "     mode 2     ";
-const char _menu_3[] PROGMEM  =  "     mode 3     ";
+const char _menu_2[] PROGMEM  =  " mode 2(in dev.)";
+const char _menu_3[] PROGMEM  =  " mode 3(in dev.)";
 const char _menu_4[] PROGMEM  =  "   Sounds: ";
 //Звук
 const char _sound_1[] PROGMEM =  "OFF";
