@@ -46,6 +46,8 @@ LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
 
 Timer lcd_clear_tmr(LCD_CLEAR_TIME); //Нужен для очищения всего экрана через определённое время
 
+
+
 //Структура для хранения пользовательской информации
 struct UserData
 {
@@ -72,23 +74,17 @@ enum GameStates
   //######
 } State, LastState;
 
-void leds_update() {
-  for (byte _led_ind = 0; _led_ind < LED_BTN_COUNT; _led_ind++)
-  {
-    leds[_led_ind].update();
-  }
-}
 
-void lcd_update()
-{
-  if (lcd_clear_tmr.ready())
-  {
-    lcd.clear();
-    lcd_clear_tmr.stop();
 
-    lcd_clear_tmr.setPeriod(LCD_CLEAR_TIME); //Если вдруг период был изменён
-  }
-}
+//####### IO-функции. Реализация находится в файле LG_io_tools #######
+void leds_btns_update();
+void lcd_update();
+bool isHoldButton(const byte& btn_ind = NONE_LED_BTN);
+byte getPressedButton();
+void blink(const byte& led_ind = NONE_LED_BTN);
+//##############
+
+
 
 void setup() {
   Serial.begin(9600);
@@ -103,7 +99,7 @@ void setup() {
 }
 
 void loop() {
-  leds_update();
+    leds_btns_update();
   lcd_update();
 
   switch (State)
@@ -254,5 +250,10 @@ void loop() {
       State = State + 1;
       if (_menu_sound < State) {State = _menu_mode1;}
     }
+  }
+
+  if (isHoldButton()) //Если зажаты все кнопки, то заканчиваем игру
+  {
+    User._is_game = false;
   }
 }
