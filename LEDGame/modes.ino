@@ -26,20 +26,18 @@ Timer back_delay_tmr(BACK_DELAY_TIME); //Таймер для задержки п
 void game_mode1()
 {
   //####### Обработка выхода в меню #######
-  if (back_delay_tmr.ready() || (!User._is_game)) //Если таймер выхода в меню закончился или игра была остановлена
+  if (back_delay_tmr.ready() || (!_is_game)) //Если таймер выхода в меню закончился или игра была остановлена
   {
     _set_b_score();
     
     State = _menu_mode1; //Выходим в меню
-    User._is_game = false;
+    _is_game = false;
 
     leds[last_user_ans].setState(LOW); //Если игра была остановлена, то выключаем последний светодиод
     
     _set_basic();
 
     back_delay_tmr.stop();
-
-    Serial.println(0);
 
     return;
   }
@@ -131,9 +129,9 @@ void game_mode1()
     //##############
 }
 
-void game_mode2(){};
+void game_mode2(){}
 
-void game_mode3(){};
+void game_mode3(){}
 
 void _set_basic()
 {
@@ -170,7 +168,7 @@ void _lose_()
 
     back_delay_tmr.start();
    }
-};
+}
 
 void _start_()
 {
@@ -207,5 +205,9 @@ void _check_time()
 
 void _set_b_score()
 {
-  if (User.b_scores[State] < (state-1)) {User.b_scores[State] = (state-1);}
+  if (User.b_scores[State] < (state-1))
+  {
+    User.b_scores[State] = (state-1);
+    SetDataInterrupt();
+  }
 }

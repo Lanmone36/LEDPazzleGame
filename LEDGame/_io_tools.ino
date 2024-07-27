@@ -59,3 +59,8 @@ byte getPressedButton()
 
   return NONE_LED_BTN;
 }
+
+void print_b_score(const byte& game_mode_ind)
+{
+  lcd.print(User.b_scores[game_mode_ind]);
+}

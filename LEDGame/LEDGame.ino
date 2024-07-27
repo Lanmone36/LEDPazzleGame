@@ -1,7 +1,9 @@
 #include "./libraries/Button/Button.cpp"
 #include "./libraries/LED/LED.cpp"
 #include "_texts.h"
+
 #include <LiquidCrystal_I2C.h>
+#include <EEPROM.h>
 
 #define _BASIC_LED_BLINK_TIME 500 //Переопределение для более удобного обращения
 #define LED_BLINK_DELAY_TIME 500 //Задержка после мигания светодиодом
@@ -48,14 +50,24 @@ Timer lcd_clear_tmr(LCD_CLEAR_TIME); //Нужен для очищения все
 
 
 
-//Структура для хранения пользовательской информации
+#define INIT_EEPROM_ADDR 0 //Адрес памяти, которая будет отвечать за проверку на первую инициализацию
+#define INIT_EEPROM_KEY 106 //Ключ проверки на первую инициализацию
+#define EEPROM_SIZE EEPROM.length() //Размер EEPROM-памяти
+uint16_t data_addr = INIT_EEPROM_ADDR + 1; //Адрес хранения пользовательской информации 
+//#define DATA_ADDR INIT_EEPROM_ADDR + 1 //Реализация хранения данных в одной области памяти
+
+//Структура для хранения пользовательской информации в EEPROM-памяти
 struct UserData
 {
-  uint16_t b_scores[MODES_COUNT]{0}; //массив для хранения лучших результатов в режимах
+  uint32_t _rewrite_cnt; //Адрес области памяти, в которой будет записана пользовательская информация
+  uint16_t b_scores[MODES_COUNT]; //массив для хранения лучших результатов в режимах
   bool sound : 1; //Флаг для включения/выключения игровых звуков
-  bool _is_game: 1;
+  bool _mem_check : 1; //Флаг для проверки, использовалась ли ранее указанная область памяти
 } User;
 
+#define USER_DATA_LENGTH sizeof(User) //Размер пользовательской информации.
+
+bool _is_game = false; //Флаг для контроля игрового процесса
 
 //Перечисление для хранения состояния всей игры
 enum GameStates
@@ -70,24 +82,79 @@ enum GameStates
   _menu_mode1,
   _menu_mode2,
   _menu_mode3,
-  _menu_sound, //Вкл./Выкл. звук
+  _menu_sound //Вкл./Выкл. звук
   //######
 } State, LastState;
 
 
 
-//####### IO-функции. Реализация находится в файле LG_io_tools #######
+//####### IO-функции. Реализация находится в файле _io_tools.ino #######
 void leds_btns_update();
 void lcd_update();
 bool isHoldButton(const byte& btn_ind = NONE_LED_BTN);
 byte getPressedButton();
 void blink(const byte& led_ind = NONE_LED_BTN);
+void print_b_score(const byte& game_mode_ind);
 //##############
 
 
 
+//####### Реализация изменения области памяти для хранения данных #######
+//                          и нахождения её
+void set_next_addr() //Меняем адрес записи на следующий
+{
+  data_addr += USER_DATA_LENGTH;
+
+  if ((data_addr + USER_DATA_LENGTH) > EEPROM_SIZE) {data_addr = 0;} //Начинаем новый цикл
+  if (data_addr == INIT_EEPROM_ADDR) {data_addr++;}
+}
+
+void get_data() //Находим текущую область памяти с данными
+{
+  uint32_t _cnt;
+
+  while (true)
+  {
+    EEPROM.get(data_addr, User);
+    _cnt = User._rewrite_cnt;
+    
+    EEPROM.get(data_addr+USER_DATA_LENGTH, User); //Получаем следущую область памяти хранения пользовательской информации
+
+    if (_cnt > User._rewrite_cnt || User._mem_check) //Если новая область памяти имеет меньшее число перезаписей (текущая область последняя)
+                                                     //или ещё не была использована ни разу
+    {
+      EEPROM.get(data_addr, User); //Оставляем текущую область памяти (так как это последняя перезапись)
+      Serial.println(data_addr);
+
+      return;
+    }
+
+    set_next_addr();
+  }
+}
+
 void setup() {
   Serial.begin(9600);
+  
+  //####### Первая инициализация #######
+  if (EEPROM.read(INIT_EEPROM_ADDR) != INIT_EEPROM_KEY)
+  {
+    EEPROM.update(INIT_EEPROM_ADDR, INIT_EEPROM_KEY);
+
+    for (byte _ind = 0; _ind < MODES_COUNT; _ind++)
+    {
+      User.b_scores[_ind] = 0;
+    }
+    User.sound = false;
+    User._mem_check = 0;
+    User._rewrite_cnt = 0;
+    
+    EEPROM.put(data_addr, User);
+  }
+  //##############
+  
+  get_data();
+  //EEPROM.get(DATA_ADDR, User);
   
   lcd.init();
   lcd.backlight();
@@ -95,11 +162,11 @@ void setup() {
   State = _menu_mode1;
   LastState = _menu_sound; //Или любое другое состояние, кроме состояния State
 
-  randomSeed(random(0, RANDOM_MAX_SEED));
+  randomSeed(analogRead(A0));
 }
 
 void loop() {
-    leds_btns_update();
+  leds_btns_update();
   lcd_update();
 
   switch (State)
@@ -114,7 +181,7 @@ void loop() {
             lcd.clear();
             lcd.setCursor(0, 0);
             lcd_print(_b_score);
-            lcd.print(User.b_scores[0]);
+            print_b_score(0);
             lcd.setCursor(0, 1);
             lcd_print(menu[0]);
 
@@ -124,7 +191,7 @@ void loop() {
          if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
          {
             State = LastState = _game_mode1;
-            User._is_game = true;
+            _is_game = true;
 
             randomSeed(random(0, RANDOM_MAX_SEED));
 
@@ -138,7 +205,7 @@ void loop() {
             lcd.clear();
             lcd.setCursor(0, 0);
             lcd_print(_b_score);
-            lcd.print(User.b_scores[1]);
+            print_b_score(1);
             lcd.setCursor(0, 1);
             lcd_print(menu[1]);
 
@@ -152,7 +219,7 @@ void loop() {
             lcd.clear();
             lcd.setCursor(0, 0);
             lcd_print(_b_score);
-            lcd.print(User.b_scores[2]);
+            print_b_score(2);
             lcd.setCursor(0, 1);
             lcd_print(menu[2]);
 
@@ -179,7 +246,7 @@ void loop() {
             lcd.clear();
             lcd.setCursor(0, 0);
             lcd_print(_b_score);
-            lcd.print(User.b_scores[0]);
+            print_b_score(0);
             lcd.setCursor(0, 1);
             lcd_print(menu[0]);
 
@@ -189,7 +256,7 @@ void loop() {
          if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
          {
             State = LastState = _game_mode1;
-            User._is_game = true;
+            _is_game = true;
 
             lcd.clear();
          }
@@ -201,7 +268,7 @@ void loop() {
             lcd.clear();
             lcd.setCursor(0, 0);
             lcd_print(_b_score);
-            lcd.print(User.b_scores[1]);
+            print_b_score(1);
             lcd.setCursor(0, 1);
             lcd_print(menu[1]);
 
@@ -215,7 +282,7 @@ void loop() {
             lcd.clear();
             lcd.setCursor(0, 0);
             lcd_print(_b_score);
-            lcd.print(User.b_scores[2]);
+            print_b_score(2);
             lcd.setCursor(0, 1);
             lcd_print(menu[2]);
 
@@ -238,7 +305,7 @@ void loop() {
     #endif
   }
 
-  if (!User._is_game)
+  if (!_is_game)
   {
     if (btns[0].isClicked()) //Первая кнопка
     {
@@ -252,8 +319,21 @@ void loop() {
     }
   }
 
-  if (isHoldButton()) //Если зажаты все кнопки, то заканчиваем игру
+  if (isHoldButton() && _is_game) //Если зажаты все кнопки, то заканчиваем игру
   {
-    User._is_game = false;
+     _is_game = false;
   }
+}
+
+
+
+//####### Функция аппаратного прерывания, сработает при выключении устройства #######
+void SetDataInterrupt() //При выключении устройства сохраняет пользовательскую информацию
+{
+  User._mem_check = 0; //Объявляем, что память была использована
+  User._rewrite_cnt++;
+  EEPROM.put(data_addr, User); //Записываем текущие данные в теущую область памяти
+
+  set_next_addr(); //Переходим в следующую область памяти
+  EEPROM.put(data_addr, User);
 }
