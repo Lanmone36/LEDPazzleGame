@@ -93,7 +93,7 @@ void game_mode1()
            lcd_clear_tmr.start();
          }
          
-        lvls[state] = random(LED_BTN_COUNT);
+        lvls[state] = randomSet(1);
         is_next_lvl = true;
         cur_lvl = 0;
         state++;
@@ -110,13 +110,13 @@ void game_mode1()
         if (last_user_ans == NONE_LED_BTN) //Если это первое нажатие
         {
           last_user_ans = cur_user_ans;
-          leds[cur_user_ans].setState(HIGH);
+          setState(cur_user_ans, HIGH);
         }
       }
       
       if (cur_user_ans != last_user_ans)
       {
-          leds[last_user_ans].setState(LOW);
+          setState(last_user_ans, LOW);
 
           if (last_user_ans == lvls[cur_lvl])
           {
@@ -180,7 +180,7 @@ void game_mode2()
   {
     if (is_next_lvl)
     { 
-      lvls[cur_lvl] = random(LED_BTN_COUNT);
+      lvls[cur_lvl] = randomSet();
       blink(lvls[cur_lvl]);
       cur_lvl++;
   
@@ -216,13 +216,13 @@ void game_mode2()
         if (last_user_ans == NONE_LED_BTN) //Если это первое нажатие
         {
           last_user_ans = cur_user_ans;
-          leds[cur_user_ans].setState(HIGH);
+          setState(cur_user_ans, HIGH);
         }
       }
       
       if (cur_user_ans != last_user_ans)
       {
-          leds[last_user_ans].setState(LOW);
+          setState(last_user_ans, LOW);
 
           if (last_user_ans == lvls[cur_lvl])
           {
@@ -238,8 +238,110 @@ void game_mode2()
 
 void game_mode3()
 {
+  //####### Обработка выхода в меню #######
+  if (back_delay_tmr.ready() || (!_is_game)) //Если таймер выхода в меню закончился или игра была остановлена
+  {
+    _set_b_score();
+    
+    State = _menu_mode3; //Выходим в меню
+    _is_game = false;
+
+    leds[last_user_ans].setState(LOW); //Если игра была остановлена, то выключаем последний светодиод
+    
+    _set_basic();
+
+    back_delay_tmr.stop();
+
+    return;
+  }
   
+  if (!back_delay_tmr.isStop()) {return;} //Если таймер выхода начался, не запускаем игру
+  //##############
+    
+  _check_time();
+  
+  if (state == MAX_LEVEL) //Если пройдены все уровни
+  {
+    _win_();
+    
+    _set_basic();
+    return;
+  }
+
+  if (is_lose) //Поражение
+  {
+    _lose_();
+    
+    return;
+  }
+
+  if (is_start) //Если счётчик начала игры не закончился (идёт "вступление")
+  {
+    _start_();
+
+    return;
+  }
+
+  //####### Основной код игры #######
+  if (delay_led_tmr.isStop())
+  {
+    if (is_next_lvl)
+    { 
+      lvls[cur_lvl] = randomSet(random(1, LED_BTN_COUNT));
+      blink(lvls[cur_lvl]);
+      cur_lvl++;
+  
+      if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
+      else {delay_led_tmr.start();}
+
+      return;
+    }
+    
+    if (cur_lvl == state) //Если уровень пройден
+    {
+         blink();
+         if (state != 0)
+         {
+           lcd.setCursor(0, 0);
+           lcd_print(win[(bool)(cur_lvl%5)]);
+           lcd_clear_tmr.start();
+         }
+         
+        is_next_lvl = true;
+        cur_lvl = 0;
+        state++;
+        
+        delay_led_tmr.start();
+
+        return;
+    }
+
+      cur_user_ans = getPressedButton(false); //Получаем индекс нажатой пользователем кнопки (или NONE_LED_BTN, если таких кнопок нет)
+
+      if (cur_user_ans != NONE_LED_BTN) //Если кнопка была нажата
+      {
+        if (last_user_ans < cur_user_ans || last_user_ans == NONE_LED_BTN) //Если это первое нажатие
+        {
+          last_user_ans = cur_user_ans;
+          setState(cur_user_ans, HIGH);
+        }
+      }
+      
+      if (cur_user_ans == NONE_LED_BTN && last_user_ans != NONE_LED_BTN)
+      {
+          setState(last_user_ans, LOW);
+
+          if (last_user_ans == lvls[cur_lvl])
+          {
+              cur_lvl++;
+              last_user_ans = NONE_LED_BTN;
+          }
+          else {is_lose = true;}
+      }
+    }
+    //##############
 }
+
 
 void _set_basic()
 {

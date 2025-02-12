@@ -50,7 +50,7 @@ Timer lcd_clear_tmr(LCD_CLEAR_TIME); //Нужен для очищения все
 
 
 #define INIT_EEPROM_ADDR 0 //Адрес памяти, которая будет отвечать за проверку на первую инициализацию
-#define INIT_EEPROM_KEY 106 //Ключ проверки на первую инициализацию
+#define INIT_EEPROM_KEY 205 //Ключ проверки на первую инициализацию
 #define EEPROM_SIZE EEPROM.length() //Размер EEPROM-памяти
 uint16_t data_addr = INIT_EEPROM_ADDR + 1; //Адрес хранения пользовательской информации 
 //#define DATA_ADDR INIT_EEPROM_ADDR + 1 //Реализация хранения данных в одной области памяти
@@ -91,7 +91,8 @@ enum GameStates
 void leds_btns_update();
 void lcd_update();
 bool isHoldButton(const byte& btn_ind = NONE_LED_BTN);
-byte getPressedButton();
+byte getPressedButton(bool only_one = true);
+byte randomSet(byte count = 1);
 void blink(const byte& led_ind = NONE_LED_BTN);
 void print_b_score(const byte& game_mode_ind);
 //##############
@@ -138,6 +139,11 @@ void setup() {
   //####### Первая инициализация #######
   if (EEPROM.read(INIT_EEPROM_ADDR) != INIT_EEPROM_KEY)
   {
+    for (int i = 0; i<EEPROM_SIZE; i++)
+    {
+      EEPROM.update(i, 255);
+    }
+    
     EEPROM.update(INIT_EEPROM_ADDR, INIT_EEPROM_KEY);
 
     for (byte _ind = 0; _ind < MODES_COUNT; _ind++)
@@ -235,6 +241,16 @@ void loop() {
             LastState = State;
         }
 
+        if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
+         {
+            State = LastState = _game_mode3;
+            _is_game = true;
+
+            randomSeed(random(0, RANDOM_MAX_SEED));
+
+            lcd.clear();
+         }
+
         break;
     case _menu_sound:
         if (LastState != State)
@@ -305,6 +321,14 @@ void loop() {
 
             LastState = State;
         }
+
+        if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
+         {
+            State = LastState = _game_mode3;
+            _is_game = true;
+
+            lcd.clear();
+         }
 
         break;
     case _menu_sound:
