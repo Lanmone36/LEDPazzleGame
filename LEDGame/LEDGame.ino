@@ -8,21 +8,20 @@
 #define _BASIC_LED_BLINK_TIME 500 //Переопределение для более удобного обращения
 #define LED_BLINK_DELAY_TIME 500 //Задержка после мигания светодиодом
 
-#define LED_BTN_COUNT 3 //Количество светодиодов
+#define LED_BTN_COUNT 3 //Количество светодиодов (max = 8)
 #define MAX_LEVEL 256//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
-#define LED_BTN_COUNT 3  //Количество светодиодов
 #define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Средняя кнопка
 
 //Пины светодиодов
-#define RED_LED A2
-#define YELLOW_LED A1
-#define GREEN_LED 13
+#define RED_LED 7
+#define YELLOW_LED 10
+#define GREEN_LED 11
 
 //Пины кнопок
-#define RED_BTN 6
+#define RED_BTN 12
 #define YELLOW_BTN 9
-#define GREEN_BTN 12
+#define GREEN_BTN 6
 
 #define NONE_LED_BTN 255  //Любое положительное число, кроме пинов под светодиоды и кнопоки
 
@@ -212,6 +211,16 @@ void loop() {
             LastState = State;
         }
 
+        if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
+         {
+            State = LastState = _game_mode2;
+            _is_game = true;
+
+            randomSeed(random(0, RANDOM_MAX_SEED));
+
+            lcd.clear();
+         }
+
         break;
     case _menu_mode3:
         if (LastState != State)
@@ -274,6 +283,14 @@ void loop() {
 
             LastState = State;
         }
+
+        if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
+         {
+            State = LastState = _game_mode2;
+            _is_game = true;
+
+            lcd.clear();
+         }
 
         break;
     case _menu_mode3:
