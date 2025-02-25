@@ -369,7 +369,7 @@ void loop() {
 
         if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
          {
-           set_sound(btn_click_snd);
+           //set_sound(btn_click_snd);
             User.sound = !User.sound;
             
             lcd.clear();
