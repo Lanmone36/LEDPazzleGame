@@ -6,8 +6,9 @@ void leds_btns_update() {
   }
 }
 
-void lcd_update()
+void lcd_pz_update()
 {
+  pz.update();
   if (lcd_clear_tmr.ready())
   {
     lcd.clear();
@@ -107,6 +108,17 @@ byte getPressedButton(bool only_one = true)
   }
   
   return _ans;
+}
+
+void set_sound(Note* snd)
+{
+  if (User.sound)
+  {
+    pz.set_sound(snd);
+    pz.play();
+  }
+
+    //tone(PZ, NOTE_A2, 100);
 }
 
 void print_b_score(const byte& game_mode_ind)

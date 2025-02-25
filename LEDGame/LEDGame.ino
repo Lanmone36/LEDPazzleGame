@@ -1,6 +1,8 @@
 #include "./libraries/Button/Button.cpp"
 #include "./libraries/LED/LED.cpp"
+#include "./libraries/PIEZZO/PIEZZO.cpp"
 #include "_texts.h"
+#include "_sounds.h"
 
 #include <LiquidCrystal_I2C.h>
 #include <EEPROM.h>
@@ -12,6 +14,9 @@
 #define MAX_LEVEL 256//Максимальное количество уровней
 #define MODES_COUNT 3 //Количество уровней
 #define MIDDLE_BUTTON_IND LED_BTN_COUNT/2 //Средняя кнопка
+
+//Пин Пьезо-элемента
+#define PZ A1
 
 //Пины светодиодов
 #define RED_LED 7
@@ -44,6 +49,9 @@ Button btns[LED_BTN_COUNT] = {RED_BTN, YELLOW_BTN, GREEN_BTN};
 LED leds[LED_BTN_COUNT] = {RED_LED, YELLOW_LED, GREEN_LED};
 
 LiquidCrystal_I2C lcd(LCD_ADDR, LCD_COLS, LCD_ROWS);
+
+Piezzo pz(PZ);
+bool is_snd_on = false;
 
 Timer lcd_clear_tmr(LCD_CLEAR_TIME); //Нужен для очищения всего экрана через определённое время
 
@@ -89,12 +97,13 @@ enum GameStates
 
 //####### IO-функции. Реализация находится в файле _io_tools.ino #######
 void leds_btns_update();
-void lcd_update();
+void lcd_pz_update();
 bool isHoldButton(const byte& btn_ind = NONE_LED_BTN);
 byte getPressedButton(bool only_one = true);
 byte randomSet(byte count = 1);
 void blink(const byte& led_ind = NONE_LED_BTN);
 void print_b_score(const byte& game_mode_ind);
+void set_sound(Note* snd);
 //##############
 
 
@@ -172,7 +181,7 @@ void setup() {
 
 void loop() {
   leds_btns_update();
-  lcd_update();
+  lcd_pz_update();
 
   switch (State)
   {
@@ -195,6 +204,7 @@ void loop() {
 
          if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
          {
+           //set_sound(btn_click_snd);
             State = LastState = _game_mode1;
             _is_game = true;
 
@@ -219,6 +229,7 @@ void loop() {
 
         if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
          {
+           //set_sound(btn_click_snd);
             State = LastState = _game_mode2;
             _is_game = true;
 
@@ -243,6 +254,7 @@ void loop() {
 
         if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
          {
+           //set_sound(btn_click_snd);
             State = LastState = _game_mode3;
             _is_game = true;
 
@@ -253,15 +265,24 @@ void loop() {
 
         break;
     case _menu_sound:
-        if (LastState != State)
+        if (LastState != State || (is_snd_on != User.sound))
         {
             lcd.clear();
             lcd.setCursor(0, 1);
             lcd_print(menu[3]);
             lcd_print(sound_mode[User.sound]);
 
+            is_snd_on = User.sound;
             LastState = State;
         }
+        
+        if (btns[MIDDLE_BUTTON_IND].isClicked()) //Средняя кнопка
+         {
+           //set_sound(btn_click_snd);
+            User.sound = !User.sound;
+            
+            lcd.clear();
+         }
 
         break;
     #else
@@ -280,6 +301,7 @@ void loop() {
 
          if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
          {
+           //set_sound(btn_click_snd);
             State = LastState = _game_mode1;
             _is_game = true;
 
@@ -302,6 +324,7 @@ void loop() {
 
         if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
          {
+           //set_sound(btn_click_snd);
             State = LastState = _game_mode2;
             _is_game = true;
 
@@ -324,6 +347,7 @@ void loop() {
 
         if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
          {
+           //set_sound(btn_click_snd);
             State = LastState = _game_mode3;
             _is_game = true;
 
@@ -332,15 +356,24 @@ void loop() {
 
         break;
     case _menu_sound:
-        if (LastState != State)
+        if (LastState != State || (is_snd_on != User.sound))
         {
             lcd.clear();
             lcd.setCursor(0, 1);
             lcd_print(menu[3]);
             lcd_print(sound_mode[User.sound]);
 
+            is_snd_on = User.sound;
             LastState = State;
         }
+
+        if (btns[MIDDLE_BUTTON_IND].isClicked() || btns[MIDDLE_BUTTON_IND+1].isClicked()) //Средние кнопки
+         {
+           set_sound(btn_click_snd);
+            User.sound = !User.sound;
+            
+            lcd.clear();
+         }
 
         break;
     #endif
@@ -350,11 +383,13 @@ void loop() {
   {
     if (btns[0].isClicked()) //Первая кнопка
     {
+       set_sound(btn_click_snd);
       State = State - 1;
       if (_menu_mode1 > State) {State = _menu_sound;}
     }
     else if (btns[LED_BTN_COUNT-1].isClicked()) //Последняя кнопка
     {
+       set_sound(btn_click_snd);
       State = State + 1;
       if (_menu_sound < State) {State = _menu_mode1;}
     }

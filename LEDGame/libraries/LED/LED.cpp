@@ -61,6 +61,7 @@ void LED::update()
 	if (this->_state == _setState)
 	{
 		digitalWrite(this->_pin, this->_lvl);
+		this->_tmr->stop();
 
 		this->_state = _free;
 	}

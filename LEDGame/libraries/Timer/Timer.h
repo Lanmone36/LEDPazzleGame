@@ -5,7 +5,7 @@
 class Timer
 {
 public:
-	Timer(const uint16_t &prd, const bool& auto_start = false);
+	Timer(const uint16_t &prd = 0, const bool& auto_start = false);
 
 	void start();
 	void stop();

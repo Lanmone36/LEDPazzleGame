@@ -33,7 +33,7 @@ void game_mode1()
     State = _menu_mode1; //Выходим в меню
     _is_game = false;
 
-    leds[last_user_ans].setState(LOW); //Если игра была остановлена, то выключаем последний светодиод
+    setState(last_user_ans, LOW); //Если игра была остановлена, то выключаем последний светодиод
     
     _set_basic();
 
@@ -75,6 +75,7 @@ void game_mode1()
     if (is_next_lvl)
     { 
       blink(lvls[cur_lvl]);
+      set_sound(blink_sound);
       cur_lvl++;
   
       if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
@@ -91,6 +92,15 @@ void game_mode1()
            lcd.setCursor(0, 0);
            lcd_print(win[(bool)(cur_lvl%5)]);
            lcd_clear_tmr.start();
+
+           if (cur_lvl%5)
+           {
+              set_sound(next_lvl_sound_special);
+           }
+           else
+           {
+              set_sound(next_lvl_sound_basic);
+           }
          }
          
         lvls[state] = randomSet(1);
@@ -139,7 +149,7 @@ void game_mode2()
     State = _menu_mode2; //Выходим в меню
     _is_game = false;
 
-    leds[last_user_ans].setState(LOW); //Если игра была остановлена, то выключаем последний светодиод
+     setState(last_user_ans, LOW); //Если игра была остановлена, то выключаем последний светодиод
     
     _set_basic();
 
@@ -180,8 +190,9 @@ void game_mode2()
   {
     if (is_next_lvl)
     { 
-      lvls[cur_lvl] = randomSet();
+      lvls[cur_lvl] = randomSet(1);
       blink(lvls[cur_lvl]);
+      set_sound(blink_sound);
       cur_lvl++;
   
       if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
@@ -198,6 +209,15 @@ void game_mode2()
            lcd.setCursor(0, 0);
            lcd_print(win[(bool)(cur_lvl%5)]);
            lcd_clear_tmr.start();
+
+           if (cur_lvl%5)
+           {
+              set_sound(next_lvl_sound_special);
+           }
+           else
+           {
+              set_sound(next_lvl_sound_basic);
+           }
          }
          
         is_next_lvl = true;
@@ -246,7 +266,7 @@ void game_mode3()
     State = _menu_mode3; //Выходим в меню
     _is_game = false;
 
-    leds[last_user_ans].setState(LOW); //Если игра была остановлена, то выключаем последний светодиод
+     setState(last_user_ans, LOW); //Если игра была остановлена, то выключаем последние светодиоды
     
     _set_basic();
 
@@ -289,6 +309,7 @@ void game_mode3()
     { 
       lvls[cur_lvl] = randomSet(random(1, LED_BTN_COUNT));
       blink(lvls[cur_lvl]);
+      set_sound(blink_sound);
       cur_lvl++;
   
       if (cur_lvl == state){is_next_lvl = false; cur_lvl = 0;}
@@ -305,6 +326,15 @@ void game_mode3()
            lcd.setCursor(0, 0);
            lcd_print(win[(bool)(cur_lvl%5)]);
            lcd_clear_tmr.start();
+
+           if (cur_lvl%5)
+           {
+              set_sound(next_lvl_sound_special);
+           }
+           else
+           {
+              set_sound(next_lvl_sound_basic);
+           }
          }
          
         is_next_lvl = true;
@@ -360,7 +390,7 @@ void _set_basic()
 
 void _lose_()
 {
-   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd_print(lose[l_s_cnt]);}
+   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd_print(lose[l_s_cnt]); set_sound(lose_sound);}
 
    if (delay_lcd_tmr.ready())
    {
@@ -382,7 +412,7 @@ void _lose_()
 
 void _start_()
 {
-   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd_print(start[l_s_cnt]);}
+   if (delay_lcd_tmr.isStop()) {delay_lcd_tmr.start(); lcd.setCursor(0, 0); lcd_print(start[l_s_cnt]); set_sound(start_sound);}
 
    if (delay_lcd_tmr.ready())
    {
@@ -403,7 +433,7 @@ void _start_()
    }
 }
 
-void _win_(){};
+void _win_(){set_sound(win_sound);};
 
 void _check_time()
 {
